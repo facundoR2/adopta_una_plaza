@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Votación en Vivo - Adoptá una Plaza</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+        .plaza-card { display: flex; justify-content: space-between; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; align-items: center; }
+        button { background-color: #2bda7a; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #22b362; }
+        h1 { color: #222; }
+    </style>
+</head>
+<body>
+
+<h1> Ranking en Tiempo Real - Río Grande</h1>
+<div id="ranking-container">Cargando plazas...</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>>
