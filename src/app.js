@@ -1,4 +1,9 @@
+require('dotenv').config(); // variable de entorno.
+
 const express = require('express');
+const conectarDB = require('./config/db');
+
+
 const http = require('http');
 const {Server} = require('socket.io');
 const helmet = require('helmet');
@@ -6,8 +11,13 @@ const path = require('path');
 
 //datos mock
 const plazas = require('./plazasData');
+// rutas.
+const plazaRoutes = require('./routes/plazaRoutes');
+
 
 const app = express();
+
+
 const server = http.createServer(app);
 const io = new Server(server,{
     cors: {
@@ -26,8 +36,15 @@ app.use(helmet({
     }
 }));
 app.use(express.json());
-
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('src/public'));
+
+//conexion de mongo DB.
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGO_URI;
+conectarDB();
+
+
 
 //permitir qu el servidor exponga los archivos estaticos  de la carpeta public de forma nativa.
 
@@ -37,35 +54,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api', (req, res) => {
     res.json({mensaje: "Bienvenido a ala APi de adopta una plaza"});
 });
+//viculo las rutas con prefijo limpio.
+app.use('/api/plazas', plazaRoutes);
 
-app.get('/api/plazas', (req, res) => {
-    const listadoGeneral = plazas.map(p => ({
-        id: p.id,
-        nombre: p.nombre,
-        barrio: p.barrio,
-        fotos: p.fotos,
-        estadoActual: p.estadoActual,
-        progresoPorcentaje: p.progresoPorcentaje
-    }));
-
-    res.json(listadoGeneral);
-});
-//ruta plaza.especifico
-app.get('/api/plazas/:id', (req, res) => {
-    const plazaId = parseInt(req.params.id);
-
-    //validacion de seguridad: verificar que  el numero sea valido
-    if(isNaN(plazaId)) {
-        return res.status(400).json({ error: "El ID provisto no es un numero válido."});
-    }
-    const plazaEncontrada = plazas.find(p => p.id === plazaId);
-
-    if (!plazaEncontrada) {
-        return res.status(404).json({ error: "La plaza solicitada no existe."});
-    }
-
-    res.json(plazaEncontrada);
-});
 
 
 
@@ -109,8 +100,6 @@ io.on('connection', (socket) => {
     });
 });
 
-//-- iniciar servidor --
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Servidor seguro corriendo en: http://localhost:${PORT}`);
-})
+server.listen(PORT,'0.0.0.0', () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
