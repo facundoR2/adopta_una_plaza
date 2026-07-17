@@ -1,33 +1,38 @@
 const mongoose = require('mongoose');
 
-const ActividadSchema = new mongoose.Schema({
-    titulo: {
+const TareaSchema = new mongoose.Schema({
+    descripcion: {
         type: String,
-        required: true,
+        required: [true, 'La descripcion de la tarea es obligatoria.'],
         trim: true
     },
-    descripcion: {
-        type: String
+    completada: {
+        type: Boolean,
+        default: false // al crear una tarea, se inicia sin completar,
+    }
+});
+
+const ActividadSchema = new mongoose.Schema({
+    nombre: {
+        type: String,
+        required: [true, 'El nombre de la actividad es obligatorio'],
+        trim: true
     },
-    fechaJornada: {
-        type: Date,
-        required: true
-    }, //dia y hora requerida.
+    fechaProgramada: {
+        type: String,
+        required: [true, 'La fecha programada es obligatoria.']
+    },
     estado: {
         type: String,
-        enum: ['Pendiente', 'Completada'],
-        default: 'Pendiente'
+        enum: ['pendiente', 'en_progreso', 'completada'],
+        default: 'pendiente'
     },
     plaza: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Plaza',
-        required: true
+        required: [true, 'La actividad debe estar asociada a una plaza.']
     },
-    grupoResponsable: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Grupo',
-        required: true
-    }
+    tareas: [TareaSchema]
 }, {
     timestamps: true
 });
