@@ -3,16 +3,19 @@ require('dotenv').config(); // variable de entorno.
 const express = require('express');
 const conectarDB = require('./config/db');
 
+//rutas.
+const plazaRoutes = require('./routes/plazaRoutes');
+const grupoRoutes = require('./routes/actividadRoutes');
+const actidadRoutes = require('./routes/actividadRoutes');
+
 
 const http = require('http');
 const {Server} = require('socket.io');
 const helmet = require('helmet');
 const path = require('path');
 
-//datos mock
-const plazas = require('./plazasData');
-// rutas.
-const plazaRoutes = require('./routes/plazaRoutes');
+
+const mongoose = require("mongoose");
 
 
 const app = express();
@@ -54,8 +57,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api', (req, res) => {
     res.json({mensaje: "Bienvenido a ala APi de adopta una plaza"});
 });
-//viculo las rutas con prefijo limpio.
+
+//rutas.
 app.use('/api/plazas', plazaRoutes);
+app.use('/api/grupos', grupoRoutes);
+app.use('/api/actividades', actidadRoutes);
 
 
 
