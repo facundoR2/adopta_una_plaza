@@ -8,6 +8,8 @@ const plazaRoutes = require('./routes/plazaRoutes');
 const grupoRoutes = require('./routes/actividadRoutes');
 const actidadRoutes = require('./routes/actividadRoutes');
 
+//modelos.
+const Plaza = require('./models/Plaza');
 
 const http = require('http');
 const {Server} = require('socket.io');
@@ -68,43 +70,35 @@ app.use('/api/actividades', actidadRoutes);
 
 //configuracion de socket.io (para tiempo real de votaciones).
 
-io.on('connection', (socket) => {
-    console.log('Un vecino se conecto a la app');
+io.on('connection', async (socket) => {
+    console.log('Un vecino se conecto a la app', socket.id);
+    try {
+        //buscar plaza de MongoDB de mayor a menor.
+        const plazas = await Plaza.find().sort({ votos: -1});
 
-    // 1 al conectarse , le envio el ranking actual a ese usuario.
-    const rankingInicial = [...plazas].sort((a,b) => b.votos - a.votos);
-    socket.emit('ranking_actualizado', rankingInicial);
+        //se envia las plazas al front. que se conecta.
+        socket.emit('rankingActualizado', plazas);
+    }catch (error) {
+        console.error('Error al enviar el ranking por Socket.io', error);
+    }
+    socket.on('votarPlaza', async (plazaId) => {
+        try {
+            const plazaActualizada = await Plaza.findByIdAndUpdate(
+                plazaId,
+                {$inc: {votos: 1 }},
+                {new: true}
+            );
 
-    //2. escuchar cuando el usuario emite un voto con la interfaz.
-    socket.on('votar_plaza', (plazaId) => {
-        const id = parseInt(plazaId);
-
-        //validacion seguridad 1.
-        if(isNaN(id)) {
-            return socket.emit('error_votacion', 'El ID de la plaza no es válido.');
+            const rankingActualizado = await Plaza.find().sort({ votos: -1});
+            io.emit('rankingActualizado', rankingActualizado);
+        }catch (error){
+            console.error('Error al procesar el voto en tiempo real:', error);
         }
-        //buscar plaza en listado.
-        const plaza = plazas.find(p => p.id === id);
-
-        if (plaza) {
-            //incremetar el voto.
-            plaza.votos++;
-            console.log(`voto registrado para: ${plaza.nombre}. total votos: ${plaza.votos}`);
-
-            // volver a calcular el ranking de mayor a menor.
-            const rankingActualizado = [...plazas].sort((a, b) => b.votos - a.votos);
-
-            //emitir en tiempo real a todos( io.emit retransmite a todos los conectados.
-            io.emit('ranking_actualizado', rankingActualizado);
-        } else {
-            socket.emit('error_votacion', 'La plaza seleccionada no existe.');
-        }
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Vecino desconectado');
     });
 });
+
+
+
 
 server.listen(PORT,'0.0.0.0', () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
