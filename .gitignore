@@ -32,3 +32,6 @@ bin/
 ### Node.js y Variables de entorno ###
 node_modules/
 .env
+
+### xmls IDEA###
+.idea/
