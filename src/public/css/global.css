@@ -153,6 +153,249 @@ body {
 }
 
 /* 4. Estructura del Paso a Paso */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+}
+
+.calendar-section {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.calendar-column,
+.agenda-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FFFFFF;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-soft);
+}
+
+.calendar-nav {
+    border: none;
+    background: none;
+    color: var(--color-text-dark);
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.calendar-title {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+.weekday-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-top: 8px;
+}
+
+.calendar-box {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    background-color: #FFFFFF;
+    padding: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+}
+
+.calendar-date {
+    min-height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    background-color: #F8F9FA;
+}
+
+.calendar-date.empty {
+    background: transparent;
+    border: none;
+}
+
+.active-date {
+    background-color: var(--color-brand);
+    color: #FFFFFF;
+}
+
+.has-activity {
+    background-color: #E8F5E9;
+    color: var(--color-brand);
+}
+
+.agenda-panel {
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow-soft);
+}
+
+.agenda-panel.activities-scheduled {
+    padding-top: 14px;
+}
+
+.subsection-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 14px;
+}
+
+.agenda-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background-color: #F8F9FA;
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.agenda-card.full-width {
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+}
+
+.agenda-card h4 {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    text-transform: capitalize;
+}
+
+.agenda-card p {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.agenda-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-text {
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-brand.small {
+    padding: 8px 12px;
+    border-radius: 999px;
+}
+
+.agenda-column,
+.agenda-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.agenda-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.horizontal-card h4 {
+    font-size: 0.98rem;
+    margin-bottom: 4px;
+}
+
+.horizontal-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.pill {
+    background-color: var(--color-brand-light);
+    color: var(--color-brand);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.activity-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.activity-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.card-image {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    display: block;
+}
+
+.card-content {
+    padding: 16px;
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-bottom: 6px;
+}
+
+.card-participants {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-brand);
+    margin-bottom: 8px;
+}
+
+.card-subtext {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+}
+
 .steps-wrapper {
     display: flex;
     flex-direction: column;

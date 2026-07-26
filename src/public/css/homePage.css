@@ -1,0 +1,45 @@
+:root {
+    --homepage-max-width: 1180px;
+    --homepage-section-padding: 30px;
+    --homepage-heading-size: 1.8rem;
+    --homepage-subsection-size: 1.15rem;
+}
+
+body {
+    min-width: 1000px;
+}
+
+.page-container {
+    max-width: var(--homepage-max-width);
+    width: min(100%, 1180px);
+    margin: 0 auto;
+    padding: 28px 24px;
+}
+
+.card-section {
+    padding: var(--homepage-section-padding);
+}
+
+.section-title {
+    font-size: var(--homepage-heading-size);
+}
+
+.subsection-title {
+    font-size: var(--homepage-subsection-size);
+}
+
+.calendar-box {
+    padding: 20px;
+}
+
+.agenda-card {
+    padding: 16px 18px;
+}
+
+.agenda-panel {
+    padding: 22px;
+}
+
+.activity-card {
+    min-height: 310px;
+}
