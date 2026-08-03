@@ -40,7 +40,6 @@ router.post('/', async (req,res) => {
 //enviamos el id de la actividad y el id especifico de la tarea interna.
 router.patch('/:actividadId/tareas/:tareaId', async (req,res) => {
     const { completada } = req.body; // se espera true o false.
-
     try {
         const actividadActualizada = await Actividad.findOneAndUpdate(
             { _id: req.params.actividadId, "tareas._id": req.params.tareaId },
