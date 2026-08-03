@@ -1,7 +1,16 @@
 require('dotenv').config(); // variable de entorno.
 
 const express = require('express');
+const cors = require('cors');
 const conectarDB = require('./config/db');
+const app = express();
+//permitir peticiones desde frontend en vite.
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+
 
 //rutas.
 const plazaRoutes = require('./routes/plazaRoutes');
@@ -20,7 +29,7 @@ const path = require('path');
 const mongoose = require("mongoose");
 
 
-const app = express();
+
 
 
 const server = http.createServer(app);
@@ -96,6 +105,7 @@ io.on('connection', async (socket) => {
         }
     });
 });
+
 
 
 
