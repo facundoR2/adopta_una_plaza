@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import NavBar from '../components/NavBar.jsx'
 import Footer from '../components/Footer.jsx'
 
-export default function PlazasPage({ plazas = [], loading, error, onSelectPlaza, onBack, onGoToHome }) {
+export default function PlazasPage({ plazas = [], loading, error, onSelectPlaza, onBack, onGoToHome, onGoToLogin, user }) {
   useEffect(() => {
     void import('../cards.css')
   }, [])
@@ -14,7 +14,7 @@ export default function PlazasPage({ plazas = [], loading, error, onSelectPlaza,
 
   return (
     <div className="plazas-page">
-      <NavBar active="plazas" onGoToHome={onGoToHome} onGoToPlazas={onBack} />
+      <NavBar active="plazas" onGoToHome={onGoToHome} onGoToPlazas={onBack} onGoToLogin={onGoToLogin} user={user} />
       <header className="page-header">
         <button className="btn-link" type="button" onClick={onBack}>
           ← Volver
@@ -39,14 +39,18 @@ export default function PlazasPage({ plazas = [], loading, error, onSelectPlaza,
             type="button"
             onClick={() => onSelectPlaza(plaza)}
           >
-            <div className="plaza-card-top">
-              <div className="plaza-card-image" />
-              <span className="plaza-id">#{plaza.uId}</span>
+            <div
+              className="plaza-card-image"
+              style={plaza.imagen ? { backgroundImage: `url(${plaza.imagen})` } : undefined}
+            >
+              <h2 className="plaza-image-title">{plaza.nombre}</h2>
             </div>
+
             <div className="plaza-card-body">
-              <h2>{plaza.nombre}</h2>
+              <span className="plaza-id">#{plaza.uId}</span>
               <p>{plaza.barrio}</p>
             </div>
+
             <div className="plaza-card-footer">
               <span>{plaza.votos ?? 0} votos</span>
               <span className="arrow">→</span>

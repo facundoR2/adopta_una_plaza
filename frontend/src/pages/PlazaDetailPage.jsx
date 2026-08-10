@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import NavBar from '../components/NavBar.jsx'
 import Footer from '../components/Footer.jsx'
 
-export default function PlazaDetailPage({ plaza, onBack, onGoToHome }) {
+export default function PlazaDetailPage({ plaza, onBack, onGoToHome, onGoToLogin, user }) {
   useEffect(() => {
     void import('../cards.css')
   }, [])
@@ -25,9 +25,30 @@ export default function PlazaDetailPage({ plaza, onBack, onGoToHome }) {
     },
   ]
 
+  const pending = [
+    { title: 'Colocar plantas', participants: 8, detail: 'Agregar macetas y arbustos en veredas.' },
+    { title: 'Reparar luminarias', participants: 3, detail: 'Arreglar y reemplazar focos quemados.' },
+    { title: 'Sembrar césped', participants: 12, detail: 'Reparar parches con tierra y semilla.' },
+    { title: 'Instalar bancos', participants: 6, detail: 'Colocar 3 bancos nuevos en la entrada.' },
+  ]
+
+  const trackRef = useRef(null)
+
+  const scrollBy = (offset) => {
+    if (!trackRef.current) return
+    trackRef.current.scrollBy({ left: offset, behavior: 'smooth' })
+  }
+
+  const completedTrackRef = useRef(null)
+
+  const scrollCompleted = (offset) => {
+    if (!completedTrackRef.current) return
+    completedTrackRef.current.scrollBy({ left: offset, behavior: 'smooth' })
+  }
+
   return (
     <div className="detail-page">
-      <NavBar active="detail" onGoToHome={onGoToHome} onGoToPlazas={onBack} />
+      <NavBar active="detail" onGoToHome={onGoToHome} onGoToPlazas={onBack} onGoToLogin={onGoToLogin} user={user} />
       <button className="btn-link" type="button" onClick={onBack}>
         ← Volver a plazas
       </button>
@@ -56,19 +77,79 @@ export default function PlazaDetailPage({ plaza, onBack, onGoToHome }) {
           <p>Estas son las actividades recientes de esta plaza.</p>
         </div>
 
-        <div className="tasks-grid">
-          {tasks.map((task) => (
-            <article key={task.title} className="task-card">
-              <div className="task-card-image" />
-              <div className="task-card-body">
-                <h3>{task.title}</h3>
-                <p>{task.detail}</p>
-              </div>
-              <div className="task-card-footer">
-                <span>{task.participants} participantes</span>
-              </div>
-            </article>
-          ))}
+        <div className="tasks-carousel small-carousel">
+          <button
+            type="button"
+            className="carousel-btn carousel-prev"
+            onClick={() => scrollCompleted(-240)}
+            aria-label="Anterior"
+          >
+            ‹
+          </button>
+
+          <div className="tasks-track" ref={completedTrackRef}>
+            {tasks.map((task) => (
+              <article key={task.title} className="task-card xsmall">
+                <div className="task-card-image" />
+                <div className="task-card-body">
+                  <h3>{task.title}</h3>
+                  <p>{task.detail}</p>
+                </div>
+                <div className="task-card-footer">
+                  <span>{task.participants} participantes</span>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className="carousel-btn carousel-next"
+            onClick={() => scrollCompleted(240)}
+            aria-label="Siguiente"
+          >
+            ›
+          </button>
+        </div>
+
+        <div className="detail-section-header" style={{ marginTop: 28 }}>
+          <h2>Tareas pendientes</h2>
+          <p>Pequeño carrusel con las tareas pendientes de la plaza.</p>
+        </div>
+
+        <div className="tasks-carousel">
+          <button
+            type="button"
+            className="carousel-btn carousel-prev"
+            onClick={() => scrollBy(-280)}
+            aria-label="Anterior"
+          >
+            ‹
+          </button>
+
+          <div className="tasks-track" ref={trackRef}>
+            {pending.map((t) => (
+              <article key={t.title} className="task-card small">
+                <div className="task-card-image" />
+                <div className="task-card-body">
+                  <h3>{t.title}</h3>
+                  <p>{t.detail}</p>
+                </div>
+                <div className="task-card-footer">
+                  <span>{t.participants} participantes</span>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className="carousel-btn carousel-next"
+            onClick={() => scrollBy(280)}
+            aria-label="Siguiente"
+          >
+            ›
+          </button>
         </div>
       </section>
       <Footer onGoToPlazas={onBack} />
