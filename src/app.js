@@ -1,5 +1,10 @@
 require('dotenv').config(); // variable de entorno.
 
+
+
+
+
+
 const express = require('express');
 const cors = require('cors');
 const conectarDB = require('./config/db');
@@ -16,6 +21,8 @@ app.use(cors({
 const plazaRoutes = require('./routes/plazaRoutes');
 const grupoRoutes = require('./routes/actividadRoutes');
 const actidadRoutes = require('./routes/actividadRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
+const noticiaRoutes = require('./routes/noticiaRoutes');
 
 //modelos.
 const Plaza = require('./models/Plaza');
@@ -73,6 +80,9 @@ app.get('/api', (req, res) => {
 app.use('/api/plazas', plazaRoutes);
 app.use('/api/grupos', grupoRoutes);
 app.use('/api/actividades', actidadRoutes);
+app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/noticias', noticiaRoutes);
+
 
 
 
