@@ -1,7 +1,23 @@
 import React from 'react'
 import './LoginPage.css'
 
-export default function LoginPage({ onBackToHome }) {
+export default function LoginPage({ onBackToHome, onLogin, onGoToRegister }) {
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [role, setRole] = React.useState('vecino')
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const usuario = {
+      nombre: email.split('@')[0] || 'Usuario',
+      email,
+      rol: role,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(email.split('@')[0] || 'U')}&background=3BA051&color=fff`,
+    }
+    localStorage.setItem('user', JSON.stringify(usuario))
+    onLogin(usuario)
+  }
+
   return (
     <div className="login-page">
       <div className="login-shell">
@@ -25,18 +41,39 @@ export default function LoginPage({ onBackToHome }) {
             <p className="subtitle">Ingresa tus datos para continuar.</p>
           </div>
 
-          <form className="login-form-fields">
+          <form className="login-form-fields" onSubmit={handleSubmit}>
             <div className="field">
               <span>✉️</span>
-              <input type="email" placeholder="Correo electrónico" />
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
             </div>
             <div className="field">
               <span>🔒</span>
-              <input type="password" placeholder="Contraseña" />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+              />
+            </div>
+            <div className="field">
+              <label className="role-select-label">Soy:</label>
+              <select value={role} onChange={(event) => setRole(event.target.value)}>
+                <option value="vecino">Vecino</option>
+                <option value="coordinador">Coordinador</option>
+              </select>
             </div>
             <button className="btn-primary" type="submit">Entrar</button>
             <div className="divider"><span>o</span></div>
-            <a className="btn-secondary" href="#">Crear una cuenta</a>
+            <button className="btn-secondary" type="button" onClick={onGoToRegister}>
+              Crear una cuenta
+            </button>
           </form>
 
           <div className="extra-links">
