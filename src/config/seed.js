@@ -1,12 +1,18 @@
 const Plaza = require('../models/Plaza');
 const Actividad = require('../models/Actividad'); // Importamos el modelo Actividad
 const plazasIniciales = require('../plazasData');
+const Usuario = require('../models/Usuario');
 const actividadesIniciales = require('../actividadesData'); // Importamos los datos de actividades
 
 async function sembrarDatos() {
     try {
         // 1. Contamos cuántas plazas existen en la colección
+        const cantidadUsuarios = await Usuario.countDocuments();
         const cantidadPlazas = await Plaza.countDocuments();
+        if (cantidadUsuarios === 0) {
+            console.log('\n---No se han encontrado base de Usuarios. Inciando Sembrado de Usuarios... ---');
+
+        }
 
         if (cantidadPlazas === 0) {
             console.log('\n--- La base de datos está vacía. Iniciando sembrado automático... ---');
