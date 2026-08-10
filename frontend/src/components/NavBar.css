@@ -53,6 +53,38 @@
   background-color: rgba(255, 255, 255, 0.16);
 }
 
+.user-profile-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 180px;
+  z-index: 1000;
+  padding: 8px 0;
+}
+.dropdown-item {
+  display:block;
+  width: 100%;
+  padding: 10px 15px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
 .navbar-right {
   display: flex;
   align-items: center;
@@ -103,4 +135,18 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: #ffffff;
+}
+
+.login-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--color-brand);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  opacity: 0.95;
 }

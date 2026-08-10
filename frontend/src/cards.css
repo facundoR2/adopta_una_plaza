@@ -1,11 +1,12 @@
 .plazas-grid,
 .tasks-grid {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
 }
 
 .plazas-grid {
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  width: 100%;
 }
 
 .tasks-grid {
@@ -14,16 +15,13 @@
 
 .plaza-card,
 .task-card {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 22px;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
+  display: block;
+  padding: 0;
+  background: transparent;
+  border: none;
   text-align: left;
   color: inherit;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   cursor: pointer;
 }
 
@@ -31,7 +29,6 @@
 .task-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-soft);
-  border-color: rgba(59, 160, 81, 0.35);
 }
 
 .plaza-card-top {
@@ -43,10 +40,38 @@
 
 .plaza-card-image,
 .task-card-image {
-  width: 84px;
-  height: 84px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, rgba(59, 160, 81, 0.18), rgba(167, 194, 60, 0.12));
+  width: 100%;
+  height: 320px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(59, 160, 81, 0.08), rgba(167, 194, 60, 0.05));
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.plaza-card-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  transition: background 0.18s ease;
+}
+
+.plaza-card:hover .plaza-card-image::after {
+  background: rgba(173, 255, 47, 0.12); /* lime green overlay on hover */
+}
+
+.plaza-image-title {
+  position: absolute;
+  left: 18px;
+  bottom: 12px;
+  margin: 0;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: #0b0b0b;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
 }
 
 .plaza-id {
@@ -73,6 +98,7 @@
   align-items: center;
   color: var(--color-text-muted);
   font-weight: 600;
+  padding: 12px 6px 0;
 }
 
 .plaza-card-footer .arrow {
@@ -108,3 +134,60 @@
   color: var(--color-text-muted);
   font-weight: 700;
 }
+
+/* Carousel styles */
+.tasks-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tasks-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 8px 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.task-card.small {
+  min-width: 260px;
+  max-width: 260px;
+  flex: 0 0 260px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.task-card.xsmall {
+  min-width: 220px;
+  max-width: 220px;
+  flex: 0 0 220px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.carousel-btn {
+  background: rgba(0,0,0,0.06);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.carousel-prev { margin-right: 8px; }
+.carousel-next { margin-left: 8px; }
+
+.tasks-track::-webkit-scrollbar { height: 8px; }
+.tasks-track::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 8px; }
