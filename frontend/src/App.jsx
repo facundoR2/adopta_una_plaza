@@ -1,84 +1,31 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import './global.css'
 import './login.css'
 import './App.css'
-import NavBar from './components/NavBar.jsx'
-import Footer from './components/Footer.jsx'
+
+//-------servicios-----//
+import { fetchPlazas } from './services/plazaService.js'
+//-------plazas------//
 import PlazasPage from './pages/PlazasPage.jsx'
 import PlazaDetailPage from './pages/PlazaDetailPage.jsx'
+import CoordinatorDashboard from './pages/CoordinatorDashboard.jsx'
+import CoordActividades from './pages/CoordActividades.jsx'
 import LoginPage from './pages/LoginPage.jsx'
-
-function HomePage({ onGoToPlazas }) {
-  return (
-    <div className="home-page">
-      <NavBar active="home" onGoToHome={() => {}} onGoToPlazas={onGoToPlazas} />
-
-      <main className="page-container">
-        <section className="card-section hero-section">
-          <h2>Adoptá una Plaza</h2>
-          <p>Sumate a transformar los espacios verdes de Río Grande junto a tus vecinos.</p>
-          <div className="home-actions">
-            <button className="btn-primary" type="button" onClick={onGoToPlazas}>
-              Ver plazas
-            </button>
-            <button className="btn-secondary" type="button">
-              Ver actividades
-            </button>
-          </div>
-        </section>
-
-        <section className="card-section">
-          <h2 className="section-title">¿Cómo funciona el sitio?</h2>
-
-          <div className="steps-wrapper">
-            <div className="step-item">
-              <div className="step-content">
-                <span className="step-badge">Paso 1</span>
-                <h3 className="step-title">Explorá y Votá en el Ranking</h3>
-                <p className="step-description">Conocé las plazas de la ciudad que necesitan mantenimiento y votalas en tiempo real para acelerar su adopción.</p>
-              </div>
-            </div>
-
-            <div className="step-item">
-              <div className="step-content">
-                <span className="step-badge">Paso 2</span>
-                <h3 className="step-title">Formá un Grupo de Voluntarios</h3>
-                <p className="step-description">Registrate con tus vecinos para organizar cuadrillas de trabajo y apadrinar el espacio verde de tu barrio.</p>
-              </div>
-            </div>
-
-            <div className="step-item">
-              <div className="step-content">
-                <span className="step-badge">Paso 3</span>
-                <h3 className="step-title">Participá en las Jornadas de Mantenimiento</h3>
-                <p className="step-description">Consultá el calendario de actividades, completá los checklists de tareas y subí los avances.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <Footer onGoToPlazas={onGoToPlazas} />
-    </div>
-  )
-}
-
-
-
+import RegisterPage from './pages/RegisterPage.jsx'
+import HomePage from './pages/HomePage.jsx'
 
 function App() {
-  const [view, setView] = useState('home')
+  
+
+  const [user, setUser] = useState(null)
   const [plazas, setPlazas] = useState([])
   const [selectedPlaza, setSelectedPlaza] = useState(null)
+  const [registerData, setRegisterData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    // Debug: log app state changes to help trace missing home render
-    // Check browser console for these messages when running the frontend
-    // eslint-disable-next-line no-console
-    console.log('APP STATE', { view, selectedPlaza, loading, error, plazasLength: plazas.length })
-  }, [view, selectedPlaza, loading, error, plazas])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const controller = new AbortController()
@@ -87,12 +34,8 @@ function App() {
       setLoading(true)
       setError(null)
       try {
-        const response = await fetch('/api/plazas/', { signal: controller.signal })
-        if (!response.ok) {
-          throw new Error('No se pudo cargar la lista de plazas')
-        }
-        const data = await response.json()
-        setPlazas(data.slice(0, 10))
+        const data = await fetchPlazas()
+        setPlazas(data)
       } catch (fetchError) {
         if (fetchError.name !== 'AbortError') {
           setError('Error cargando plazas. Revisa tu conexión o la API.')
@@ -107,36 +50,115 @@ function App() {
     return () => controller.abort()
   }, [])
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('user')
+      if (raw) {
+        setUser(JSON.parse(raw))
+      }
+    } catch (err) {
+      // ignore parse errors
+    }
+  }, [])
+
+  const handleBackDashBoard = () => {
+    navigate('/coordinador')
+  }
+
+  // const handleSelectActividad = (actividad) => {
+  //   setSelectedActividad(actividad)
+  //   navigate(`/actividades/${actividad._id || actividad.id}`)
+  // }
+
   const handleSelectPlaza = (plaza) => {
     setSelectedPlaza(plaza)
-    setView('detail')
+    navigate(`/plazas/${plaza._id || plaza.id}`)
   }
 
-  const handleBackToPlazas = () => setView('plazas')
-  const handleBackHome = () => setView('home')
+  const handleBackToPlazas = () => {
+    navigate('/plazas')
+  }
 
-    if (view === 'login') {
-      return <LoginPage onBackToHome={handleBackHome} />
+  const handleBackHome = () => {
+    navigate('/')
+  }
+
+  const handleGoToRegister = () => {
+    navigate('/registro')
+  }
+
+  const handleGoToLogin = () => {
+    navigate('/login')
+  }
+
+  const handleLogin = (userData) => {
+    setUser(userData)
+    localStorage.setItem('user', JSON.stringify(userData))
+    if (userData?.rol === 'coordinador') {
+      navigate('/coordinador')
+    } else {
+      navigate('/')
     }
-
-  if (view === 'detail' && selectedPlaza) {
-    return <PlazaDetailPage plaza={selectedPlaza} onBack={handleBackToPlazas} onGoToHome={handleBackHome} />
   }
 
-  if (view === 'plazas') {
-    return (
-      <PlazasPage
+  const handleLogout = () => {
+    setUser(null)
+    localStorage.removeItem('user')
+    navigate('/')
+  }
+
+  const handleRegisterNext = (data) => {
+    setRegisterData(data)
+    navigate('/plazas')
+  }
+
+  return (
+    <Routes>
+      {/* Define your routes here */}
+      <Route
+        path="/"
+        element={<HomePage onGoToPlazas={handleBackToPlazas} onGoToRegister={handleGoToRegister} onGoToLogin={handleGoToLogin} user={user} />} />
+
+      <Route
+        path="/login"
+        element={<LoginPage onBackToHome={handleBackHome} onLogin={handleLogin} onGoToRegister={handleGoToRegister} />} />
+
+      <Route
+        path="/registro"
+        element={<RegisterPage
+        onBackToHome={handleBackHome}
+        onNext={handleRegisterNext}
+        plazas={plazas}
+        loading={loading} />} />
+
+      <Route path="/plazas" element={<PlazasPage
         plazas={plazas}
         loading={loading}
         error={error}
         onSelectPlaza={handleSelectPlaza}
         onBack={handleBackHome}
         onGoToHome={handleBackHome}
-      />
-    )
-  }
+        onGoToLogin={handleGoToLogin}
+        user={user} />} />
 
-  return <HomePage onGoToPlazas={() => setView('plazas')} />
+      <Route
+        path="/plazas/:id"
+        element={selectedPlaza ? (
+          <PlazaDetailPage
+            plaza={selectedPlaza}
+            onBack={handleBackToPlazas}
+            onGoToHome={handleBackHome}
+            onGoToLogin={handleGoToLogin}
+            user={user} />
+        ) : (
+          <Navigate to="/plazas" replace />
+        )} />
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+
+        
+    </Routes>
+  )
 }
 
 export default App
