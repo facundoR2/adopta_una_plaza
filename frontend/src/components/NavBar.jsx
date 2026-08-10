@@ -1,6 +1,23 @@
+import React, { useState, useRef, useEffect } from 'react';
 import './NavBar.css'
 
-function NavBar({ active, onGoToHome, onGoToPlazas }) {
+function NavBar({ active, onGoToHome, onGoToPlazas, onGoToCoordinator, user, onGoToLogin }) {
+  ////
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+  ////
+  const displayName = user?.nombre || user?.name || 'Usuario'
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <header className="top-navbar">
       <div className="navbar-left">
@@ -30,6 +47,17 @@ function NavBar({ active, onGoToHome, onGoToPlazas }) {
               Plazas & Ranking
             </button>
           </li>
+          {user?.rol === 'coordinador' && (
+            <li>
+              <button
+                className={`nav-item ${active === 'coordinator' ? 'active' : ''}`}
+                type="button"
+                onClick={onGoToCoordinator}
+              >
+                Dashboard
+              </button>
+            </li>
+          )}
           <li><button className="nav-item" type="button">Calendario</button></li>
           <li><button className="nav-item" type="button">Voluntarios</button></li>
         </ul>
@@ -39,13 +67,32 @@ function NavBar({ active, onGoToHome, onGoToPlazas }) {
         <button className="btn-icon" title="Notificaciones" type="button">
           🔔<span className="badge"></span>
         </button>
-        <div className="user-profile">
-          <img src="https://via.placeholder.com/35" alt="Avatar" className="avatar" />
-          <span className="user-name">Vecino Activo</span>
-        </div>
+        {user ? (
+          <div className="user-profile-container relative" ref={menuRef}>
+            <button className='user-profile' onClick={() => setIsOpen(!isOpen)} type="button">
+                <img src={user.avatar || 'https://via.placeholder.com/35'} alt="Avatar" className="avatar" />
+                <span className="user-name">{displayName}</span>
+            </button>
+            {isOpen && (
+              <div className="dropdown-menu">
+                <button className="dropdown-item" onClick={ () => {
+                  setIsOpen(false);
+                  onGoToCoordinator();
+                }}>
+                  ir al Dashboard
+                </button>
+                <button className='dropdown-item text-red'>Cerrar Sesión</button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button className="btn-primary login-btn" type="button" onClick={onGoToLogin}>
+            Iniciar sesión
+          </button>
+        )}
       </div>
     </header>
-  )
+  );
 }
 
 export default NavBar
