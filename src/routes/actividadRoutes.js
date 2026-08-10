@@ -20,18 +20,19 @@ router.get('/', async (req,res) =>{
 
 // crear nueva jornada de trabajo.
 router.post('/', async (req,res) => {
-    const { descripcion, fechaProgramada, plazaId, tareas } = req.body;
+    const { nombre, fechaProgramada, estado, plazaId, tareas } = req.body;
 
     try {
         const nuevaActividad = new Actividad({
-            descripcion,
+            nombre,
             fechaProgramada,
+            estado: estado || 'pendiente',
             plaza: plazaId,
-            tareas: tareas || [] // recibe la lista de subdocumentos {nombreTarea}
+            tareas: tareas || []
         });
 
         const actividadGuardada = await nuevaActividad.save();
-        res.status(201).json({ mensaje: 'Jornada agendada correctamente', actividad: actividadGuardada });
+        res.status(201).json({ mensaje: 'Actividad creada correctamente', actividad: actividadGuardada });
     } catch (error){
         res.status(400).json({ mensaje: 'Error al crear la actividad', error: error.message });
     }
