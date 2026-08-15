@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Actividad = require('../models/Actividad');
+const { registrarActividad } = require('../controllers/activityController');
 
 //1) ver tdoas las jornadas /filtrar por mes.
 router.get('/', async (req,res) =>{
@@ -17,6 +18,10 @@ router.get('/', async (req,res) =>{
         res.status(500).json({ mensaje: 'Error al obtener el calendario', error: error.message});
     }
 });
+//crear una nueva actividad.
+router.post('/new', async (req, res) => {
+    registrarActividad(req, res);
+})
 
 // crear nueva jornada de trabajo.
 router.post('/', async (req,res) => {
@@ -37,6 +42,7 @@ router.post('/', async (req,res) => {
         res.status(400).json({ mensaje: 'Error al crear la actividad', error: error.message });
     }
 });
+//REVISAR:-------------------------------------------------
 //3) actualizar checklist: marcar actividad como completada o pendiente.
 //enviamos el id de la actividad y el id especifico de la tarea interna.
 router.patch('/:actividadId/tareas/:tareaId', async (req,res) => {
