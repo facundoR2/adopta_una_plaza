@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
-import './global.css'
+import './styles/global.css'
 import './login.css'
 import './App.css'
 
@@ -9,8 +9,10 @@ import { fetchPlazas } from './services/plazaService.js'
 //-------plazas------//
 import PlazasPage from './pages/PlazasPage.jsx'
 import PlazaDetailPage from './pages/PlazaDetailPage.jsx'
+//------coord------//
 import CoordinatorDashboard from './pages/CoordinatorDashboard.jsx'
 import CoordActividades from './pages/CoordActividades.jsx'
+import DashBoardVecino  from './pages/DashBoardVecino.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import HomePage from './pages/HomePage.jsx'
@@ -91,15 +93,6 @@ function App() {
     navigate('/login')
   }
 
-  const handleLogin = (userData) => {
-    setUser(userData)
-    localStorage.setItem('user', JSON.stringify(userData))
-    if (userData?.rol === 'coordinador') {
-      navigate('/coordinador')
-    } else {
-      navigate('/')
-    }
-  }
 
   const handleLogout = () => {
     setUser(null)
@@ -114,22 +107,33 @@ function App() {
 
   return (
     <Routes>
-      {/* Define your routes here */}
+      { /* Define your routes here */ }
       <Route
         path="/"
-        element={<HomePage onGoToPlazas={handleBackToPlazas} onGoToRegister={handleGoToRegister} onGoToLogin={handleGoToLogin} user={user} />} />
+        element={<HomePage onGoToPlazas={handleBackToPlazas} onGoToRegister={handleGoToRegister} onGoToLogin={handleGoToLogin} user={user} />}
+      />
 
       <Route
         path="/login"
-        element={<LoginPage onBackToHome={handleBackHome} onLogin={handleLogin} onGoToRegister={handleGoToRegister} />} />
+        element={<LoginPage onBackToHome={handleBackHome}  onGoToRegister={handleGoToRegister} />}
+      />
 
       <Route
         path="/registro"
-        element={<RegisterPage
-        onBackToHome={handleBackHome}
-        onNext={handleRegisterNext}
-        plazas={plazas}
-        loading={loading} />} />
+        element={
+          <RegisterPage
+            onBackToHome={handleBackHome}
+            onRegisterSuccess={(finalData) => {
+              console.log("Registro completo:", finalData);
+              navigate('/login');
+            }}
+            plazas={plazas}
+            loading={loading}
+          />
+        }
+      />
+      <Route path="/dashboard-vecino" element={<DashBoardVecino user={user} />} />
+      <Route path='/dashboard-coordinador' element={<CoordinatorDashboard user={user} />} />
 
       <Route path="/plazas" element={<PlazasPage
         plazas={plazas}
@@ -155,6 +159,8 @@ function App() {
         )} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
+
+      
 
         
     </Routes>
