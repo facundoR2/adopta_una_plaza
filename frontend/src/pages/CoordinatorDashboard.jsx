@@ -2,6 +2,7 @@ import React from 'react'
 import NavBar from '../components/NavBar.jsx'
 import Footer from '../components/Footer.jsx'
 import './CoordinatorDashboard.css'
+import CalendarioActividades from '../components/CalendarioActividades.jsx'
 
 const noticias = [
   {
@@ -37,6 +38,11 @@ const actividadesAgendadas = [
 ]
 
 export default function CoordinatorDashboard({ user, onGoToHome, onGoToPlazas, onGoToLogin, onLogout }) {
+  const [actividades, setActividades] = useState([]);
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
+  const [loading, setLoading] = useState(true);
+
+ 
   return (
     <div className="coordinator-dashboard">
       <NavBar
@@ -109,57 +115,15 @@ export default function CoordinatorDashboard({ user, onGoToHome, onGoToPlazas, o
             </div>
           </div>
 
-          <div className="activity-grid">
-            <div className="calendar-card">
-              <div className="calendar-header">
-                <h3>Calendario</h3>
-                <span>Sep 2025</span>
-              </div>
-              <div className="calendar-body">
-                <div className="calendar-row">
-                  <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
-                </div>
-                <div className="calendar-days">
-                  {Array.from({ length: 35 }, (_, index) => (
-                    <button key={index} type="button" className={`calendar-day ${index === 10 ? 'selected' : ''}`}>
-                      {index < 30 ? index + 1 : ''}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          {/* <div className="activity-grid">
+            <div className="sideBar-columna-derecha">
+              <CalendarioActividades
+                actividades={actividades}
+                userRole={user?.rol || 'vecino'}
+                onSelectFecha={(fecha, lista) => console.log('Selecciono:', fecha, lista)}
+              />
             </div>
-
-            <div className="task-columns">
-              <div className="today-card">
-                <div className="section-label">activ. para hoy</div>
-                <div className="task-list">
-                  {actividadesHoy.map((actividad) => (
-                    <article key={actividad.id} className="task-item">
-                      <div>
-                        <h3>{actividad.title}</h3>
-                        <p>{actividad.detail}</p>
-                      </div>
-                      <span className={`status-badge status-${actividad.status.toLowerCase().replace(' ', '-')}`}>
-                        {actividad.status}
-                      </span>
-                    </article>
-                  ))}
-                </div>
-              </div>
-
-              <div className="scheduled-card">
-                <div className="section-label">activ. agendadas</div>
-                <div className="schedule-list">
-                  {actividadesAgendadas.map((actividad) => (
-                    <article key={actividad.id} className="schedule-item">
-                      <h3>{actividad.title}</h3>
-                      <p>{actividad.time}</p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          </div> */}
         </section>
       </main>
 
