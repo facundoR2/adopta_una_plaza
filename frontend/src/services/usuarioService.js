@@ -1,7 +1,25 @@
-const API_URL = '/api/usuarios';
+const API_URL = '/api/auth';
 
-export async function registerUser({ nombre, apellido, email, password }) {
+export async function checkEmailExists(email) {
+  const response = await fetch(`${API_URL}/verificar-email`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json'},
+    body: JSON.stringify({ email }),
+    credentials: 'include',
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.mensaje || 'Error al verificar el email');
+  }
+
+  return data.existe; // devuelve un boolean, false si esta libre.
+}
+
+export async function registerUser({ nombre, apellido, email, password, esGrupo, plazaId }) {
   try {
+    
     const response = await fetch(`${API_URL}/registro`, {
       method: 'POST',
       headers: {
@@ -12,6 +30,8 @@ export async function registerUser({ nombre, apellido, email, password }) {
         apellido,
         email,
         password,
+        esGrupo,
+        plazaId,
       }),
       credentials: 'include',
     });

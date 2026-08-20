@@ -1,13 +1,43 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './LoginPage.css'
+import { loginUser } from '../services/usuarioService'
+import { useNavigate } from 'react-router-dom'
 
 export default function LoginPage({ onBackToHome, onLogin, onGoToRegister }) {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [role, setRole] = React.useState('vecino')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
-  const handleSubmit = (event) => {
+  const handlesubmit = async (event) => {
     event.preventDefault()
+    setLoading(true)
+
+    try {
+      const data = await loginUser({ email, password })
+
+      const usuariologed = data.usuario || data;
+
+      localStorage.setItem('user', JSON.stringify(usuariologed))
+      if(onLogin){
+        //avisa a componente padre del usuario
+        //onLogin(usuariologed)
+      }
+      if (usuariologed.rol === 'coordinador' || usuariologed.rol === 'admin'){
+        navigate('/dashboard-coordinador')
+      }else {
+        navigate('/plazas')
+      }
+
+    } catch (error) {
+      console.error('Error during login:', error)
+      alert('Error al iniciar sesión: ' + error.message || 'Credenciales invalidas');
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleavatar = (event) => {
     const usuario = {
       nombre: email.split('@')[0] || 'Usuario',
       email,
@@ -15,7 +45,6 @@ export default function LoginPage({ onBackToHome, onLogin, onGoToRegister }) {
       avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(email.split('@')[0] || 'U')}&background=3BA051&color=fff`,
     }
     localStorage.setItem('user', JSON.stringify(usuario))
-    onLogin(usuario)
   }
 
   return (
@@ -41,7 +70,7 @@ export default function LoginPage({ onBackToHome, onLogin, onGoToRegister }) {
             <p className="subtitle">Ingresa tus datos para continuar.</p>
           </div>
 
-          <form className="login-form-fields" onSubmit={handleSubmit}>
+          <form className="login-form-fields">
             <div className="field">
               <span>✉️</span>
               <input
@@ -62,14 +91,7 @@ export default function LoginPage({ onBackToHome, onLogin, onGoToRegister }) {
                 required
               />
             </div>
-            <div className="field">
-              <label className="role-select-label">Soy:</label>
-              <select value={role} onChange={(event) => setRole(event.target.value)}>
-                <option value="vecino">Vecino</option>
-                <option value="coordinador">Coordinador</option>
-              </select>
-            </div>
-            <button className="btn-primary" type="submit">Entrar</button>
+            <button className="btn-primary" type="submit" onClick={handlesubmit}>Entrar</button>
             <div className="divider"><span>o</span></div>
             <button className="btn-secondary" type="button" onClick={onGoToRegister}>
               Crear una cuenta

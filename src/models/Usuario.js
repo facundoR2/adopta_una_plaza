@@ -26,6 +26,12 @@ const usuarioSchema = new mongoose.Schema(
             required: [true, 'La contraseña es obligatoria'],
             minlength: [6, 'La contraseña debe tener al menos 6 caracteres'],
         },
+        tipo: {
+            type: String,
+            enum: ['voluntario','grupo'],
+            default: 'voluntario',
+            required: [true, 'Debe Indicar si se registra solo o como grupo'],
+        },
         rol: {
             type: String,
             enum: ['vecino','coordinador','admin'],
@@ -40,15 +46,14 @@ const usuarioSchema = new mongoose.Schema(
 // HOOK DE SEGURIDAD: Encriptar la contraseña antes de guardar en MongoDB
 usuarioSchema.pre('save', async function (next) {
     // Solo encripta si la contraseña fue modificada o es nueva
-    if (!this.isModified('password')) return next();
+    if (!this.isModified('password')) return;
 
     try {
         // Genera la sal y encripta
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
-        next();
     } catch (error) {
-        next(error);
+        throw error;
     }
 });
 
