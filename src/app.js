@@ -80,7 +80,7 @@ app.get('/api', (req, res) => {
 app.use('/api/plazas', plazaRoutes);
 app.use('/api/grupos', grupoRoutes);
 app.use('/api/actividades', actidadRoutes);
-app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/auth', usuarioRoutes);
 app.use('/api/noticias', noticiaRoutes);
 
 
