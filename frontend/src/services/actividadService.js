@@ -1,9 +1,25 @@
+import { json } from "express";
+
 const API_URL = '/api/actividades';
 
 export async function getActividades(mes) {
   const url = mes ? `${API_URL}?mes=${encodeURIComponent(mes)}` : API_URL;
   const response = await fetch(url);
   if (!response.ok) throw new Error('Error al cargar actividades');
+  return response.json();
+}
+
+//funcion de coordinador para buscar actividades anexadas a la plaza/s.
+export async function getCoordActivitys(Pdata) {
+  const response = await fetch(`${API_URL}/coord`, {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json' },
+    body: JSON.stringify(Pdata),
+
+  });
+  if(!response.ok){
+    throw new Error('Error al buscar actividades de plazas');
+  }
   return response.json();
 }
 

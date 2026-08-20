@@ -23,6 +23,29 @@ router.post('/new', async (req, res) => {
     registrarActividad(req, res);
 })
 
+//buscar actividades de coordinador.
+router.get('/coordinador', async (req, res) => {
+
+    try{
+        //llamar al controlador.
+        const { plazaIds } = req.query;
+        if (!plazaIds) {
+            return res.status(400).json({ mensaje: 'No se enviaron plazas para consulta'});
+        }
+
+        //convertir string en un array.
+        const idsArray = plazaIds.split(',');
+
+        const actividades = await Actividad.find({ plaza: { $in: idsArray } })
+            .populate('plaza', 'nombre barrio')
+            .sort({ fechaProgramada: 1 });
+        res.json(actividades);
+
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al consutar actividades', error: error.message });
+    }
+})
+
 // crear nueva jornada de trabajo.
 router.post('/', async (req,res) => {
     const { nombre, fechaProgramada, estado, plazaId, tareas } = req.body;

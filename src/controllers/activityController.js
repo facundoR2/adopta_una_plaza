@@ -66,4 +66,15 @@ const registrarActividad = async (req, res) => {
     }
 };
 
+const buscarActividades = (req,res) =>{
+    try {
+        const {email, plazas} = req.body;
+        // hacer busqueda de actividades en adopcion donde el usuario sea el que coincida con el mail y y la plaza.
+        // const resultado = await   coordinatorService.buscarPlazas
+
+
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al buscar actividades', error: error.message });
+    }
+}
 module.exports = { registrarActividad };
