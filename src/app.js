@@ -4,7 +4,8 @@ require('dotenv').config(); // variable de entorno.
 
 
 
-
+// seguridad
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const cors = require('cors');
 const conectarDB = require('./config/db');
@@ -70,7 +71,8 @@ conectarDB();
 //permitir qu el servidor exponga los archivos estaticos  de la carpeta public de forma nativa.
 
 app.use(express.static(path.join(__dirname, 'public')));
-
+// permite al servidor usar jwt.
+app.use(cookieParser());
 // rutas de prueba.
 app.get('/api', (req, res) => {
     res.json({mensaje: "Bienvenido a ala APi de adopta una plaza"});
