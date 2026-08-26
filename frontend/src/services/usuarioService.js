@@ -1,5 +1,5 @@
 const API_URL = '/api/auth';
-
+ //pasar estas funciones a authService.
 export async function checkEmailExists(email) {
   const response = await fetch(`${API_URL}/verificar-email`, {
     method: 'POST',
@@ -52,15 +52,11 @@ export async function loginUser({ email, password }) {
   try {
     const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
+      headers: {'Content-Type': 'application/json'},
       credentials: 'include',
+      body: JSON.stringify({ email, password })
     });
+    const data = await response.json();
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
@@ -68,8 +64,18 @@ export async function loginUser({ email, password }) {
       throw new Error(message);
     }
 
-    return await response.json();
+    return data; 
   } catch (error) {
     throw new Error(error?.message || 'No se pudo conectar con el backend');
   }
+}
+export const logoutUser = async () => {
+  const response = await fetch(`${API_URL}/logout`,{
+    method: 'POST',
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    throw new Error('Error al cerrar sesion');
+  }
+  return await response.json();
 }
