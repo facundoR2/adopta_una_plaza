@@ -18,13 +18,17 @@ const ActividadSchema = new mongoose.Schema({
         required: [true, 'El nombre de la actividad es obligatorio'],
         trim: true
     },
+    descripcion: {
+        type: String,
+        trim: true
+    },
     fechaProgramada: {
         type: String,
         required: [true, 'La fecha programada es obligatoria.']
     },
     estado: {
         type: String,
-        enum: ['pendiente', 'en_progreso', 'completada'],
+        enum: ['pendiente', 'en_proceso', 'completada', 'cancelada'],
         default: 'pendiente'
     },
     plaza: {
