@@ -1,5 +1,3 @@
-import { json } from "express";
-
 const API_URL = '/api/actividades';
 
 export async function getActividades(mes) {
@@ -10,18 +8,26 @@ export async function getActividades(mes) {
 }
 
 //funcion de coordinador para buscar actividades anexadas a la plaza/s.
-export async function getCoordActivitys(Pdata) {
-  const response = await fetch(`${API_URL}/coord`, {
+export async function getCoordActivitys() {
+  const response = await fetch(`${API_URL}/coordinador`, {
     method: 'GET',
     headers: {'Content-Type': 'application/json' },
-    body: JSON.stringify(Pdata),
-
+    credentials: 'include'
   });
   if(!response.ok){
     throw new Error('Error al buscar actividades de plazas');
   }
   return response.json();
 }
+
+export async function getMisPlazas() {
+  const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/usuarios/mis-plazas`,{
+    credentials: 'include'
+  });
+  if (!response.ok) throw new Error('Error al obtener tus plazas');
+  const data = await response.json();
+  return data.plazas || [];
+};
 
 export async function getActividad(id) {
   const response = await fetch(`${API_URL}/${id}`);
