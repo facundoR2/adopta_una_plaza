@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Usuario = require('../models/Usuario');
 const Adopcion = require('../models/Adopcion');
 const Plaza = require('../models/Plaza');
-
+const jwt = require('jsonwebtoken');
 //funcionalidad para registrar el usuario.
 
 const registrarUsuarioYAdopcion = async (req, res) => {
@@ -76,6 +76,7 @@ const registrarUsuarioYAdopcion = async (req, res) => {
 
 
 
+
 const verificarEmail = async (req, res) => {
     try {
         const { email } = req.body;
@@ -96,7 +97,7 @@ const validarLogin = async (req, res) => {
 
         //validar si existe y si son strings.
         if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
-            res.status(400).json({ mensaje: 'Ingrese un email y contraseña validos'});
+             return res.status(400).json({ mensaje: 'Ingrese un email y contraseña validos'});
         }
         //sanitizamos el email.
         const emailSano = email.trim().toLocaleLowerCase();
@@ -112,21 +113,40 @@ const validarLogin = async (req, res) => {
             return res.status(401).json({ mensaje: 'Credenciales invalidas'});
         }
 
+        //creamos el dto para el token.
+        //se empaqueta solo los datos solicitados.
+        const tokenPayload = {
+            _id: usuario._id,
+            nombre: usuario.nombre,
+            email: usuario.email,
+            rol: usuario.rol
+        };
+
+        //generamos el token.
+        const token = jwt.sign(
+            tokenPayload,
+            process.env.JWT_SECRET,
+            { expiresIn: '2h'} //ponemos que expire en 2 horas por ahora.
+        );
+
+        // reutilizamos el tokenPayload como dto para no enviar la contra.
+
+
 
         //respuesta correcta.
-        res.json({
+        res
+            .cookie('access_token',token,{
+                httpOnly: true, //la cookie solo se puede acceder en el servidor.
+                sameSite: 'strict', //la cookie solo se puede acceeder desde el mismo dominio.
+                maxAge: 1000 * 60 * 60 *2 // la cookie tiene valides de 2 horas.
+            })
+            .json({
             mensaje: 'LoginExitoso',
-            usuario: {
-                //agregar DTO para que solo envie nombre, email y rol.
-                id: usuario._id,
-                nombre: usuario.nombre,
-                apellido: usuario.apellido,
-                email: usuario.email,
-                rol: usuario.rol,
-            },
+            usuario: tokenPayload
         });
-    } catch (errore) {
-        res.status(500).json({ mensaje: 'Error en el servidor durante el login', error: errore.message });
+
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error en el servidor durante el login', error: error.message });
     }
 };
 
