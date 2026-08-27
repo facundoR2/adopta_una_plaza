@@ -1,0 +1,42 @@
+/* Styles for Footer component */
+.main-footer {
+  background: var(--color-footer-bg);
+  color: var(--color-footer-text);
+  width: 100%;
+  padding: 32px 20px;
+}
+
+.main-footer a,
+.main-footer .footer-link,
+.main-footer p,
+.main-footer h3,
+.main-footer h4,
+.main-footer li {
+  color: var(--color-footer-text);
+}
+
+.main-footer .footer-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  margin-top: 28px;
+  padding-top: 18px;
+  text-align: center;
+}
+
+.footer-col h3,
+.footer-col h4 {
+  margin: 0 0 8px 0;
+}

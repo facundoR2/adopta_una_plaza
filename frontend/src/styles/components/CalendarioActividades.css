@@ -1,0 +1,218 @@
+/* layout */
+.calendario-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr; /* 350 para calendario, resto para tareas */
+  gap: 2rem;
+  align-items: start; /* asi ambos estan arriba*/
+  margin-top: 1.5rem; 
+}
+.calendario-columna-izq {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* responsive para que se apilen uno debajo del otro en celulares*/
+@media (max-width: 768px) {
+  .calendario-layout {
+    grid-template-columns: 1fr; /*cambia a 1 sola columna*/
+  }
+}
+
+/*-----calendario-------*/
+.calendario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.texto-cargando {
+  font-size: 0.85rem;
+  color: #3ba051;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.texto-cargando::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: 2px solid #e8f5e9;
+  border-top-color: #3ba051;
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+  display: inline-block;
+}
+
+.react-calendar__tile.dia-completada {
+  background-color: #d1e7dd !important;
+  color: #0f5132 !important;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.react-calendar__tile.dia-pendiente {
+  background-color: #cfe2ff !important;
+  color: #084298 !important;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.react-calendar__tile.dia-en-proceso {
+  background-color: #ffe5d0 !important;
+  color: #fd7e14 !important;
+  font-weight: bold;
+  border-radius: 6px;
+}
+.react-calendar__tile.dia-cancelada {
+  background-color: #ffe3d0 !important;
+  color: #8b0c0c !important;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+
+/*---------tareas---------------*/
+/*border laterales dinamicos segun estado*/
+.actividad-item-card.estado-completada {border-left-color: #198754; }
+.actividad-item-card.estado-pendiente {border-left-color: #0d6efd; }
+.actividad-item-card.estado-en_proceso {border-left-color: #fd7e14; }
+.actividad-item-card.estado-cancelada {border-left-color: #8b0c0c; }
+
+.card-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge-estado {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.badge-estado.completada {background-color: #d1e7dd; color: #0f5132;}
+.badge-estado.pendiente {background-color: #cfe2ff; color: #084298;}
+.badge-estado.en_proceso {background-color: #ffe5d0; color: #fd7e14;}
+.badge-estado.cancelada {background-color: #ffe5d0; color: #8b0c0c;}
+
+.actividad-item-card h4 {
+  margin: 0 0 6px 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.plaza-nombre {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.tareas-contenedor {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  border: 1px solid #eee;
+}
+
+.tareas-contenedor h5 {
+  margin: 0 0 6px 0;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.lista-tareas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tarea-item {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.tarea-item label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.tachado {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.calendario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+
+
+
+@keyframes girar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.actividad-item-card {
+  background: #f9fbf9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+
+
+.plaza-nombre {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.tareas-contenedor {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  border: 1px solid #eee;
+}
+
+.tareas-contenedor h5 {
+  margin: 0 0 6px 0;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.lista-tareas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tarea-item {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.tarea-item label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.tachado {
+  text-decoration: line-through;
+  color: #888;
+}
