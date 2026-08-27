@@ -6,6 +6,8 @@ import './App.css'
 
 //-------servicios-----//
 import { fetchPlazas } from './services/plazaService.js'
+//----auth------//
+import { useAuth } from './context/AuthContext.jsx'
 //-------plazas------//
 import PlazasPage from './pages/PlazasPage.jsx'
 import PlazaDetailPage from './pages/PlazaDetailPage.jsx'
@@ -16,11 +18,10 @@ import DashBoardVecino  from './pages/DashBoardVecino.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import HomePage from './pages/HomePage.jsx'
+import { logoutUser } from './services/usuarioService.js'
 
 function App() {
-  
-
-  const [user, setUser] = useState(null)
+  const { user, login, logout } = useAuth();
   const [plazas, setPlazas] = useState([])
   const [selectedPlaza, setSelectedPlaza] = useState(null)
   const [registerData, setRegisterData] = useState(null)
@@ -52,29 +53,8 @@ function App() {
     return () => controller.abort()
   }, [])
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('user')
-      if (raw) {
-        setUser(JSON.parse(raw))
-      }
-    } catch (err) {
-      // ignore parse errors
-    }
-  }, [])
-
-  const handleBackDashBoard = () => {
-    navigate('/coordinador')
-  }
-
-  // const handleSelectActividad = (actividad) => {
-  //   setSelectedActividad(actividad)
-  //   navigate(`/actividades/${actividad._id || actividad.id}`)
-  // }
-
   const handleSelectPlaza = (plaza) => {
-    setSelectedPlaza(plaza)
-    navigate(`/plazas/${plaza._id || plaza.id}`)
+    navigate(`/plazas/${plaza.uId ?? plaza._id}`)
   }
 
   const handleBackToPlazas = () => {
@@ -93,13 +73,6 @@ function App() {
     navigate('/login')
   }
 
-
-  const handleLogout = () => {
-    setUser(null)
-    localStorage.removeItem('user')
-    navigate('/')
-  }
-
   const handleRegisterNext = (data) => {
     setRegisterData(data)
     navigate('/plazas')
@@ -108,20 +81,20 @@ function App() {
   return (
     <Routes>
       { /* Define your routes here */ }
-      <Route
-        path="/"
-        element={<HomePage onGoToPlazas={handleBackToPlazas} onGoToRegister={handleGoToRegister} onGoToLogin={handleGoToLogin} user={user} />}
-      />
+      <Route path="/" element={<HomePage 
+          onGoToPlazas={handleBackToPlazas}
+          onGoToRegister={handleGoToRegister}
+          onGoToLogin={handleGoToLogin}
+          onLogout={logout}
+          user={user}
+        /> } />
 
-      <Route
-        path="/login"
-        element={<LoginPage onBackToHome={handleBackHome}  onGoToRegister={handleGoToRegister} />}
-      />
-
-      <Route
-        path="/registro"
-        element={
-          <RegisterPage
+      <Route path="/login" element={<LoginPage
+          onBackToHome={handleBackHome}
+          onGoToRegister={handleGoToRegister}
+          onLogin={login}
+          /> } />
+      <Route path="/registro" element={<RegisterPage
             onBackToHome={handleBackHome}
             onRegisterSuccess={(finalData) => {
               console.log("Registro completo:", finalData);
@@ -129,11 +102,15 @@ function App() {
             }}
             plazas={plazas}
             loading={loading}
-          />
-        }
-      />
-      <Route path="/dashboard-vecino" element={<DashBoardVecino user={user} />} />
-      <Route path='/dashboard-coordinador' element={<CoordinatorDashboard user={user} />} />
+          /> } />
+      <Route path="/dashboard-vecino" element={<DashBoardVecino
+            user={user}
+            onLogout={logout}
+          /> } />
+      <Route path='/dashboard-coordinador' element={<CoordinatorDashboard
+            onLogout={logout}
+            user={user}
+          /> } />
 
       <Route path="/plazas" element={<PlazasPage
         plazas={plazas}
@@ -145,24 +122,19 @@ function App() {
         onGoToLogin={handleGoToLogin}
         user={user} />} />
 
-      <Route
-        path="/plazas/:id"
-        element={selectedPlaza ? (
-          <PlazaDetailPage
-            plaza={selectedPlaza}
-            onBack={handleBackToPlazas}
-            onGoToHome={handleBackHome}
-            onGoToLogin={handleGoToLogin}
-            user={user} />
-        ) : (
-          <Navigate to="/plazas" replace />
-        )} />
+      <Route path="/plazas/:id" element={
+        <PlazaDetailPage
+          plazas={plazas}
+          onBack={handleBackToPlazas}
+          onGoToHome={handleBackHome}
+          onGoToLogin={handleGoToLogin}
+          user={user}
+        />
+      } />
+        
 
       <Route path="*" element={<Navigate to="/" replace />} />
 
-      
-
-        
     </Routes>
   )
 }
