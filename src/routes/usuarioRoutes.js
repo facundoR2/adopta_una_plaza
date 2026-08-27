@@ -1,39 +1,14 @@
 const express = require('express');
+const {verificarToken} = require("../middlewares/authMiddleware");
+const { obtenerPlazasAsociadas } = require('../controllers/usuarioController');
 const router = express.Router();
-const Usuario = require('../models/Usuario');
-const  { registrarUsuarioYAdopcion, verificarEmail, validarLogin} = require("../controllers/authController");
-const { obtenerPerfilCoordinador } = require('../controllers/CoordinadorController');
 
+//rutas para funcionalidades de usuario.
 
-// endpoint para funcionalidades basicas de Usuario.
+router.get('/mis-plazas', verificarToken, obtenerPlazasAsociadas );
 
-// validar email. lo uso principalmente para registro en pasos y permisos para los dashboards.
-router.post('/verificar-email', verificarEmail);
-//post para registrar nuevo usuario.
-router.post('/registro', async (req, res) => {
-    try{
-        //falaria un dto aca.
-        console.log('Comienza el registro de usuario');
-        await registrarUsuarioYAdopcion(req, res);
-    } catch (error){
-        res.status(500).json({ mensaje: 'Error al registrar usuario', error: error.message});
-    }
-});
+//ruta para agregar avances (PROX).
 
-// login de usuario
-router.post('/login', async (req, res) => {
-    try {
-        //llamamos controlador.
-         await validarLogin(req, res);
-
-    } catch (error) {
-        res.status(500).json({ mensaje: 'Error en el login', error: error.message });
-    }
-});
-
-//funcionalidades de Coordinador.
-router.get('/coord', obtenerPerfilCoordinador);
-
-
+//ruta para modificar avances(PROX).
 
 module.exports = router;

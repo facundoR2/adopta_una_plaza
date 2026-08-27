@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Plaza = require('../models/Plaza'); // Subimos un nivel para buscar la carpeta models
+const Plaza = require('../models/Plaza');
+const {buscarPlaza} = require("../controllers/plazaController");
+
+
+// rutas para el manejo de plazas (admins), consultas generales  y votaciones en tiempo real.
 
 // 1. Endpoint para obtener todas las plazas (GET /api/plazas)
 router.get('/', async (req, res) => {
@@ -12,6 +16,8 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Error en el servidor de base de datos' });
     }
 });
+//buscar plaza por id.
+router.get('/:id', buscarPlaza);
 
 // 2. Endpoint para registrar un voto (POST /api/plazas/votar)
 router.post('/votar', async (req, res) => {
@@ -36,6 +42,7 @@ router.post('/votar', async (req, res) => {
         res.status(500).json({ error: 'No se pudo procesar el voto' });
     }
 });
+
 
 // Exportamos el router para que app.js lo pueda usar
 module.exports = router;
