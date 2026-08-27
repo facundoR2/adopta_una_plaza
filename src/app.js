@@ -21,11 +21,11 @@ app.use(cors({
 //rutas.
 const plazaRoutes = require('./routes/plazaRoutes');
 const grupoRoutes = require('./routes/actividadRoutes');
-const actidadRoutes = require('./routes/actividadRoutes');
-const usuarioRoutes = require('./routes/usuarioRoutes');
+const actividadRoutes = require('./routes/actividadRoutes');
+const authRoutes = require('./routes/authRoutes');
 const noticiaRoutes = require('./routes/noticiaRoutes');
-
-//modelos.
+const usuarioRoutes = require('./routes/usuarioRoutes');
+//modelos usado para votacion en tiempo real.
 const Plaza = require('./models/Plaza');
 
 const http = require('http');
@@ -81,9 +81,10 @@ app.get('/api', (req, res) => {
 //rutas.
 app.use('/api/plazas', plazaRoutes);
 app.use('/api/grupos', grupoRoutes);
-app.use('/api/actividades', actidadRoutes);
-app.use('/api/auth', usuarioRoutes);
+app.use('/api/actividades', actividadRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/noticias', noticiaRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 
 
 
