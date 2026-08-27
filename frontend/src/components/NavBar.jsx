@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './NavBar.css'
+import '../styles/components/NavBar.css';
 
-function NavBar({ active, onGoToHome, onGoToPlazas, onGoToCoordinator, user, onGoToLogin }) {
-  ////
+function NavBar({ active, onGoToHome, onGoToPlazas, onGoToCoordinator, user, onGoToLogin, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-  ////
+  
   const displayName = user?.nombre || user?.name || 'Usuario'
 
   useEffect(() => {
@@ -69,8 +68,8 @@ function NavBar({ active, onGoToHome, onGoToPlazas, onGoToCoordinator, user, onG
         </button>
         {user ? (
           <div className="user-profile-container relative" ref={menuRef}>
-            <button className='user-profile' onClick={() => setIsOpen(!isOpen)} type="button">
-                <img src={user.avatar || 'https://via.placeholder.com/35'} alt="Avatar" className="avatar" />
+            <button title='perfil' className='user-profile' onClick={() => setIsOpen(!isOpen)} type="button">
+                <img src={user.avatar || 'https://dummyimage.com/30x30/ba5f1e/fff.png&text=user'} alt="Avatar" className="avatar" />
                 <span className="user-name">{displayName}</span>
             </button>
             {isOpen && (
@@ -81,7 +80,7 @@ function NavBar({ active, onGoToHome, onGoToPlazas, onGoToCoordinator, user, onG
                 }}>
                   ir al Dashboard
                 </button>
-                <button className='dropdown-item text-red'>Cerrar Sesión</button>
+                <button className='dropdown-item text-red' onClick= {onLogout} >Cerrar Sesión</button>
               </div>
             )}
           </div>

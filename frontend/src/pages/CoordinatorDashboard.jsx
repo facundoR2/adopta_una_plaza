@@ -1,8 +1,11 @@
-import React from 'react'
-import NavBar from '../components/NavBar.jsx'
-import Footer from '../components/Footer.jsx'
-import './CoordinatorDashboard.css'
-import CalendarioActividades from '../components/CalendarioActividades.jsx'
+import React, { useEffect, useState } from 'react'
+import NavBar from '../components/NavBar.jsx';
+import Footer from '../components/Footer.jsx';
+import '../styles/pages/CoordinatorDashboard.css';
+import CalendarioActividades from '../components/CalendarioActividades.jsx';
+import { getCoordActivitys, getMisPlazas } from '../services/actividadService.js';
+import ABMactividades from '../components/ABMactividades.jsx';
+import ABMtareas from '../components/ABMtareas.jsx';
 
 const noticias = [
   {
@@ -25,23 +28,35 @@ const noticias = [
   },
 ]
 
-const actividadesHoy = [
-  { id: 1, title: 'Limpiar sendero', detail: 'Recorrer y levantar residuos', status: 'Completada' },
-  { id: 2, title: 'Seleccionar plantas', detail: 'Elegir especies nativas', status: 'En progreso' },
-  { id: 3, title: 'Reparar juegos', detail: 'Revisar estructura y pintar', status: 'Planificada' },
-]
-
-const actividadesAgendadas = [
-  { id: 1, title: 'Reparar juegos espacio 02', time: 'mañana 10:30 hs' },
-  { id: 2, title: 'Poda paso', time: 'viernes 15:00 hs' },
-  { id: 3, title: 'Arreglar dispenser de agua caliente', time: 'lunes 09:00 hs' },
-]
-
 export default function CoordinatorDashboard({ user, onGoToHome, onGoToPlazas, onGoToLogin, onLogout }) {
   const [actividades, setActividades] = useState([]);
-  const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
+  const [plazasCoordinador, setPlazasCoordinador] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [vistaActividades, setVistaActividades] = useState(false);
+  const [vistaTareas, setVistaTareas] = useState('calendario'); //calendario o gestion.
 
+  const cargarDatos = async() => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [dataActividades, plazas] = await Promise.all([
+        getCoordActivitys(),
+        getMisPlazas()
+      ]);
+      setActividades(dataActividades.actividades || [] );
+      setPlazasCoordinador(plazas || []);
+    } catch (error) {
+      console.error("Error cargando el dashboard:", error);
+      setError('No se pudo cargar las actividades. Intenta denuevo en unos segundos');
+    } finally {
+       setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    cargarDatos();
+  }, []); //array vacio para que se ejecute una vez al cargar pagina.
  
   return (
     <div className="coordinator-dashboard">
@@ -50,29 +65,46 @@ export default function CoordinatorDashboard({ user, onGoToHome, onGoToPlazas, o
         onGoToHome={onGoToHome}
         onGoToPlazas={onGoToPlazas}
         onGoToLogin={onGoToLogin}
-        onGoToCoordinator={() => {}}
         onLogout={onLogout}
         user={user}
       />
 
       <main className="dashboard-container">
+        {/*------seccion HERO--------- */}
         <section className="dashboard-hero">
           <div className="hero-copy">
             <p className="eyebrow">Dashboard coordinador</p>
-            <h1>Bienvenido, {user?.name || 'Coordinador'}</h1>
+            <h1>Bienvenido, {user?.nombre || 'Coordinador'}</h1>
             <p className="hero-text">
               Gestiona noticias, actividades y el progreso de las plazas desde un solo lugar.
             </p>
           </div>
           <div className="hero-actions">
-            <button className="btn-secondary" type="button">
-              Gestionar actividades
+            {/*Control de visibilidad de abm */}
+            <button className={vistaActividades ? "btn-primary" : "btn-secondary"} type="button"
+            onClick={() => setVistaActividades(!vistaActividades)}>
+              {vistaActividades ? 'ocultar Gestion de Actividades' : 'Gestionar actividades'}
             </button>
-            <button className="btn-primary" type="button">
+            <button className="btn-primary" type="button" onClick={() => setVistaActividades(true)}>
               Nueva actividad
             </button>
           </div>
         </section>
+
+        {error && (
+          <section className='dashboard-panel error-panel'>
+            <p className='texto-error'>{error}</p>
+          </section> 
+        )}
+        {vistaActividades && (
+          <section className='dashboard-panel'>
+            <ABMactividades 
+              actividades={actividades}
+              plazas={plazasCoordinador}
+              onActualizarLista={cargarDatos}
+            />
+          </section>
+        )}
 
         <section className="dashboard-panel news-panel">
           <div className="panel-header">
@@ -80,11 +112,7 @@ export default function CoordinatorDashboard({ user, onGoToHome, onGoToPlazas, o
               <p className="eyebrow">Noticias y blogs</p>
               <h2>Publicaciones recientes</h2>
             </div>
-            <button className="btn-primary" type="button">
-              Crear Noticia
-            </button>
           </div>
-
           <div className="news-grid">
             {noticias.map((noticia) => (
               <article key={noticia.id} className="news-card">
@@ -103,30 +131,34 @@ export default function CoordinatorDashboard({ user, onGoToHome, onGoToPlazas, o
           <div className="panel-header">
             <div>
               <p className="eyebrow">Actividades y progresos</p>
-              <h2>Resumen de los próximos días</h2>
+              <h2>Seguimiento de Tareas</h2>
             </div>
             <div className="action-buttons">
-              <button className="btn-secondary" type="button">
-                Gestionar actividades
-              </button>
-              <button className="btn-primary" type="button">
-                Nueva actividad
-              </button>
+              <button className={vistaTareas === 'calendario' ? 'btn-primary' : 'btn-secondary'}
+              type='button' onClick={() => setVistaTareas('calendario')}>Ver actividades (calendario)</button>
+              <button className={vistaTareas === 'abm-tareas' ? 'btn-primary' : 'btn-secondary'}
+              type='button' onClick={() => setVistaTareas('abm-tareas')}>Gestionar Tareas</button>
             </div>
           </div>
 
-          {/* <div className="activity-grid">
-            <div className="sideBar-columna-derecha">
-              <CalendarioActividades
-                actividades={actividades}
-                userRole={user?.rol || 'vecino'}
-                onSelectFecha={(fecha, lista) => console.log('Selecciono:', fecha, lista)}
-              />
+          {loading ? (
+            <p className='texto-cargando'>Cargando actividades...</p>
+          ) : (
+            <div className='contenido-dinamico'>
+              {vistaTareas === 'calendario' && (
+                <CalendarioActividades
+                  actividades={actividades}
+                  userRole={user?.rol || 'coordinador'}
+                  onSelectFecha={(fecha, lista) => console.log('Selecciono:', fecha, lista)}
+                />
+              )}
+              {vistaTareas === 'abm-tareas' && (
+              <ABMtareas actividades={actividades} onActualizarLista={cargarDatos} />
+              )}
             </div>
-          </div> */}
+          )}
         </section>
       </main>
-
       <Footer onGoToPlazas={onGoToPlazas} />
     </div>
   )

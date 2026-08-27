@@ -3,6 +3,7 @@ import Step1Form from '../components/Step1Form';
 import Step2PlazaSelection from '../components/Step2PlazaSelection';
 import NavBar  from '../components/NavBar';
 import Footer from '../components/Footer';
+import '../styles/pages/RegisterPage.css';
 
 
 

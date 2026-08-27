@@ -1,11 +1,53 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import NavBar from '../components/NavBar.jsx'
 import Footer from '../components/Footer.jsx'
+import { fetchPlazaById } from '../services/plazaService.js'
 
-export default function PlazaDetailPage({ plaza, onBack, onGoToHome, onGoToLogin, user }) {
+export default function PlazaDetailPage({ plazas = [], onBack, onGoToHome, onGoToLogin, user }) {
+  const { id } = useParams()
+
+  // uId es numérico en el modelo, pero useParams() siempre devuelve un
+  // string — por eso comparamos con String(p.uId), no con === directo.
+  const plazaEnMemoria = plazas.find((p) => String(p.uId) === id)
+
+  const [plaza, setPlaza] = useState(plazaEnMemoria || null)
+  const [loading, setLoading] = useState(!plazaEnMemoria)
+  const [error, setError] = useState(null)
+
   useEffect(() => {
     void import('../cards.css')
   }, [])
+
+  useEffect(() => {
+    // Si cambia el :id de la URL (por ejemplo, navegás de una plaza a otra
+    // sin desmontar el componente) volvemos a resolverla.
+    const encontrada = plazas.find((p) => String(p.uId) === id)
+    if (encontrada) {
+      setPlaza(encontrada)
+      setLoading(false)
+      setError(null)
+      return
+    }
+
+    let cancelado = false
+    setLoading(true)
+    setError(null)
+
+    fetchPlazaById(id)
+      .then((data) => {
+        if (!cancelado) setPlaza(data)
+      })
+      .catch((err) => {
+        if (!cancelado) setError('No se pudo cargar esta plaza. Puede que ya no exista.')
+        console.error(err)
+      })
+      .finally(() => {
+        if (!cancelado) setLoading(false)
+      })
+
+    return () => { cancelado = true }
+  }, [id, plazas])
 
   const tasks = [
     {
@@ -44,6 +86,27 @@ export default function PlazaDetailPage({ plaza, onBack, onGoToHome, onGoToLogin
   const scrollCompleted = (offset) => {
     if (!completedTrackRef.current) return
     completedTrackRef.current.scrollBy({ left: offset, behavior: 'smooth' })
+  }
+
+  if (loading) {
+    return (
+      <div className="detail-page">
+        <NavBar active="detail" onGoToHome={onGoToHome} onGoToPlazas={onBack} onGoToLogin={onGoToLogin} user={user} />
+        <div className="status-text">Cargando plaza...</div>
+      </div>
+    )
+  }
+
+  if (error || !plaza) {
+    return (
+      <div className="detail-page">
+        <NavBar active="detail" onGoToHome={onGoToHome} onGoToPlazas={onBack} onGoToLogin={onGoToLogin} user={user} />
+        <button className="btn-link" type="button" onClick={onBack}>
+          ← Volver a plazas
+        </button>
+        <div className="status-text status-error">{error || 'Plaza no encontrada.'}</div>
+      </div>
+    )
   }
 
   return (
@@ -129,7 +192,7 @@ export default function PlazaDetailPage({ plaza, onBack, onGoToHome, onGoToLogin
 
           <div className="tasks-track" ref={trackRef}>
             {pending.map((t) => (
-              <article key={t.title} className="task-card small">
+              <article title='tarea' key={t.title} className="task-card small">
                 <div className="task-card-image" />
                 <div className="task-card-body">
                   <h3>{t.title}</h3>

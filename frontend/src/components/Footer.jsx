@@ -1,4 +1,4 @@
-import './Footer.css'
+import '../styles/components/footer.css';
 
 function Footer({ onGoToPlazas }) {
   return (

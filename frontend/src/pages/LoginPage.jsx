@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './LoginPage.css'
+import '../styles/pages/LoginPage.css';
 import { loginUser } from '../services/usuarioService'
 import { useNavigate } from 'react-router-dom'
 
@@ -14,20 +14,9 @@ export default function LoginPage({ onBackToHome, onLogin, onGoToRegister }) {
     setLoading(true)
 
     try {
-      const data = await loginUser({ email, password })
+      const data = await loginUser({ email, password });
 
-      const usuariologed = data.usuario || data;
-
-      localStorage.setItem('user', JSON.stringify(usuariologed))
-      if(onLogin){
-        //avisa a componente padre del usuario
-        //onLogin(usuariologed)
-      }
-      if (usuariologed.rol === 'coordinador' || usuariologed.rol === 'admin'){
-        navigate('/dashboard-coordinador')
-      }else {
-        navigate('/plazas')
-      }
+      onLogin(data.usuario);
 
     } catch (error) {
       console.error('Error during login:', error)
@@ -37,15 +26,7 @@ export default function LoginPage({ onBackToHome, onLogin, onGoToRegister }) {
     }
   }
 
-  const handleavatar = (event) => {
-    const usuario = {
-      nombre: email.split('@')[0] || 'Usuario',
-      email,
-      rol: role,
-      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(email.split('@')[0] || 'U')}&background=3BA051&color=fff`,
-    }
-    localStorage.setItem('user', JSON.stringify(usuario))
-  }
+  
 
   return (
     <div className="login-page">
