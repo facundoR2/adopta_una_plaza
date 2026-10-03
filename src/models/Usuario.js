@@ -34,7 +34,7 @@ const usuarioSchema = new mongoose.Schema(
         },
         rol: {
             type: String,
-            enum: ['vecino','coordinador','admin'],
+            enum: ['vecino','coordinador','administrador'],
             default: 'vecino',
         },
     },
