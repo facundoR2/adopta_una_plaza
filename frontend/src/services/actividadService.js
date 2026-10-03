@@ -1,5 +1,14 @@
 const API_URL = '/api/actividades';
 
+export async function getMisActividades() {
+  const response = await fetch(`${API_URL}/mis-actividades`, {
+    credentials: 'include'
+  });
+  if (!response.ok) throw new Error('No se pudieron cargar tus actividades');
+  const data = await response.json();
+  return data.actividades || [];
+}
+
 export async function getActividades(mes) {
   const url = mes ? `${API_URL}?mes=${encodeURIComponent(mes)}` : API_URL;
   const response = await fetch(url);

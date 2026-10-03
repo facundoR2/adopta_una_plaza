@@ -1,48 +1,40 @@
 const express = require('express');
 const router = express.Router();
-const Noticia = require('../models/Noticia');
+const {
+    obtenerTanda,
+    crearNoticia,
+    actualizarNoticia,
+    bajarNoticia,
+    buscarNoticia,
+    obtenerNoticiasAdmin,
+    eliminarNoticia,
+    obtenerNoticiasPublicas
+} = require("../controllers/noticiaController");
+const { verificarRol, verificarToken } = require('../middlewares/authMiddleware');
 
-// Obtener todas las noticias
-router.get('/', async (req, res) => {
-    try {
-        const noticias = await Noticia.find().sort({ createdAt: -1 });
-        res.json(noticias);
-    } catch (error) {
-        res.status(500).json({ mensaje: 'Error al obtener noticias', error: error.message });
-    }
-});
+// ruta: /api/noticias
+
+// --- Rutas con path fijo PRIMERO (antes de cualquier /:id) ---
+
+// Listado público, solo publicado: true — la ven todos, logueados o no
+router.get('/', obtenerNoticiasPublicas);
+
+// Tanda fija de 5 (con relleno), para carruseles tipo home
+router.get('/top', obtenerTanda);
+
+// Listado completo para el panel de admin (publicadas + borradores)
+router.get('/admin', verificarToken, verificarRol("administrador"), obtenerNoticiasAdmin);
 
 // Crear una noticia
-router.post('/', async (req, res) => {
-    try {
-        const { titulo, descripcion, autor, imagenUrl, publicado } = req.body;
-        const noticia = await Noticia.create({ titulo, descripcion, autor, imagenUrl, publicado });
-        res.status(201).json({ mensaje: 'Noticia creada', noticia });
-    } catch (error) {
-        res.status(400).json({ mensaje: 'Error al crear noticia', error: error.message });
-    }
-});
+router.post('/new', verificarToken, verificarRol("administrador"), crearNoticia);
 
-// Modificar una noticia
-router.put('/:id', async (req, res) => {
-    try {
-        const noticiaActualizada = await Noticia.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-        if (!noticiaActualizada) return res.status(404).json({ mensaje: 'Noticia no encontrada' });
-        res.json({ mensaje: 'Noticia actualizada', noticia: noticiaActualizada });
-    } catch (error) {
-        res.status(400).json({ mensaje: 'Error al actualizar noticia', error: error.message });
-    }
-});
+// Dar de baja (soft-delete: publicado = false) sin borrar el documento
+router.delete('/baja/:id', verificarToken, verificarRol("administrador"), bajarNoticia);
 
-// Eliminar una noticia
-router.delete('/:id', async (req, res) => {
-    try {
-        const noticiaEliminada = await Noticia.findByIdAndDelete(req.params.id);
-        if (!noticiaEliminada) return res.status(404).json({ mensaje: 'Noticia no encontrada' });
-        res.json({ mensaje: 'Noticia eliminada' });
-    } catch (error) {
-        res.status(500).json({ mensaje: 'Error al eliminar noticia', error: error.message });
-    }
-});
+// --- Rutas dinámicas con :id, al final ---
+
+router.get('/:id', buscarNoticia);
+router.put('/:id', verificarToken, verificarRol("administrador"), actualizarNoticia);
+router.delete('/:id', verificarToken, verificarRol("administrador"), eliminarNoticia);
 
 module.exports = router;

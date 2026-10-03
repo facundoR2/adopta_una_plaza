@@ -101,7 +101,6 @@ const validarLogin = async (req, res) => {
         }
         //sanitizamos el email.
         const emailSano = email.trim().toLocaleLowerCase();
-        console.log(emailSano);
         //buscamos una coincidencia
         const usuario = await Usuario.findOne({ email: emailSano });
         if(!usuario) {

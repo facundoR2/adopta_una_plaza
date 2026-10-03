@@ -1,15 +1,18 @@
-const API_URL = '/api/noticias';
+const API_URL = import.meta.env.BASE_URL;
 
-export async function getNoticias() {
-  const response = await fetch(API_URL);
+export async function getNoticiasAdmin() {
+  const response = await fetch(`${API_URL}/noticias/admin`,{
+    credentials: 'include'
+  });
   if (!response.ok) throw new Error('Error al cargar noticias');
   return response.json();
 }
 
-export async function createNoticia(data) {
-  const response = await fetch(API_URL, {
+export async function crearNoticia(data) {
+  const response = await fetch(`${API_URL}/noticias/new`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: "include",
     body: JSON.stringify(data),
   });
   if (!response.ok) {
@@ -19,10 +22,11 @@ export async function createNoticia(data) {
   return response.json();
 }
 
-export async function updateNoticia(id, data) {
+export async function actualizarNoticia(id, data) {
   const response = await fetch(`${API_URL}/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(data),
   });
   if (!response.ok) {
@@ -32,9 +36,10 @@ export async function updateNoticia(id, data) {
   return response.json();
 }
 
-export async function deleteNoticia(id) {
+export async function eliminarNoticia(id) {
   const response = await fetch(`${API_URL}/${id}`, {
     method: 'DELETE',
+    credentials: 'include'
   });
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);

@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../styles/components/NavBar.css';
 
-function NavBar({ active, onGoToHome, onGoToPlazas, onGoToCoordinator, user, onGoToLogin, onLogout }) {
+function NavBar({ active, onGoToHome, onGoToPlazas, onGoToDashboard, user, onGoToLogin, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-  
-  const displayName = user?.nombre || user?.name || 'Usuario'
+
+  const displayName = user?.nombre || 'Usuario'
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -46,12 +46,12 @@ function NavBar({ active, onGoToHome, onGoToPlazas, onGoToCoordinator, user, onG
               Plazas & Ranking
             </button>
           </li>
-          {user?.rol === 'coordinador' && (
+          {user?.rol  && (
             <li>
               <button
-                className={`nav-item ${active === 'coordinator' ? 'active' : ''}`}
+                className={`nav-item ${['coordinador', 'vecino','admin'].includes(active) ? 'active' : ''}`}
                 type="button"
-                onClick={onGoToCoordinator}
+                onClick={onGoToDashboard}
               >
                 Dashboard
               </button>
@@ -76,7 +76,7 @@ function NavBar({ active, onGoToHome, onGoToPlazas, onGoToCoordinator, user, onG
               <div className="dropdown-menu">
                 <button className="dropdown-item" onClick={ () => {
                   setIsOpen(false);
-                  onGoToCoordinator();
+                  onGoToDashboard();
                 }}>
                   ir al Dashboard
                 </button>

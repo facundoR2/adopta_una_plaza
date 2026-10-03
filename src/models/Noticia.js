@@ -6,21 +6,25 @@ const NoticiaSchema = new mongoose.Schema({
         required: [true, 'El título es obligatorio'],
         trim: true,
     },
+    subtitulo: {
+        type: String,
+        trim: true
+    },
     descripcion: {
         type: String,
         required: [true, 'La descripción es obligatoria'],
         trim: true,
     },
+    imagen: {
+        type: String,
+        trim: true,
+    },
     autor: {
-        type: String,
-        trim: true,
-        default: 'Coordinador',
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Usuario',
+        required: true
     },
-    imagenUrl: {
-        type: String,
-        trim: true,
-        default: '',
-    },
+
     publicado: {
         type: Boolean,
         default: true,
