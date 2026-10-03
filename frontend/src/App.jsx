@@ -19,6 +19,7 @@ import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import { logoutUser } from './services/usuarioService.js'
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 
 function App() {
   const { user, login, logout } = useAuth();
@@ -59,11 +60,21 @@ function App() {
 
   const handleBackToPlazas = () => {
     navigate('/plazas')
-  }
+  };
 
   const handleBackHome = () => {
     navigate('/')
-  }
+  };
+
+  const handleGoToDashboard = () => {
+      if (user?.rol === 'coordinador') {
+          navigate('/dashboard-coordinador');
+      } else if (user?.rol === 'administrator') {
+          navigate('/dashboard-admin');
+      } else {
+          navigate('/dashboard-vecino');
+      }
+  };
 
   const handleGoToRegister = () => {
     navigate('/registro')
@@ -85,6 +96,7 @@ function App() {
           onGoToPlazas={handleBackToPlazas}
           onGoToRegister={handleGoToRegister}
           onGoToLogin={handleGoToLogin}
+          onGoToDashboard={handleGoToDashboard}
           onLogout={logout}
           user={user}
         /> } />
@@ -105,11 +117,21 @@ function App() {
           /> } />
       <Route path="/dashboard-vecino" element={<DashBoardVecino
             user={user}
+            onGoToHome={handleBackHome}
+            onGoToPlazas={handleBackToPlazas}
+            onGoToLogin={handleGoToLogin}
+            onGoToDashboard={handleGoToDashboard}
             onLogout={logout}
           /> } />
       <Route path='/dashboard-coordinador' element={<CoordinatorDashboard
             onLogout={logout}
+            onGoToDashboard={handleGoToDashboard}
             user={user}
+          /> } />
+      <Route path='/dashboard-admin' element={<AdminDashboard
+          onLogout={logout}
+          onGoToDashboard={handleGoToDashboard}
+          user={user}
           /> } />
 
       <Route path="/plazas" element={<PlazasPage
@@ -120,6 +142,7 @@ function App() {
         onBack={handleBackHome}
         onGoToHome={handleBackHome}
         onGoToLogin={handleGoToLogin}
+        onGoToDashboard={handleGoToDashboard}
         user={user} />} />
 
       <Route path="/plazas/:id" element={
@@ -128,6 +151,7 @@ function App() {
           onBack={handleBackToPlazas}
           onGoToHome={handleBackHome}
           onGoToLogin={handleGoToLogin}
+          onGoToDashboard={handleGoToDashboard}
           user={user}
         />
       } />
