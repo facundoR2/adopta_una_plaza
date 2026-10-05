@@ -14,25 +14,16 @@ export default function RegisterPage({ onBackToHome, onGoToPlazas, onGoToLogin, 
   return (
     <div className='register-page'>
       <NavBar active="home" onGoToHome={() => {}} onGoToPlazas={onGoToPlazas} onGoToLogin={onGoToLogin}  />
-      <button onClick={onBackToHome}>Volver al Inicio</button>
-      {step == 1 && (
-        <Step1Form
-          data={userData}
-          updateFields={updateFields}
-          onNext={nextStep}
-        />
-      )
-    }
-
-    {step == 2 && (
-      <Step2PlazaSelection
-        data={userData}
-        updateFields={updateFields}
-        onBack={prevStep}
-      />
-    )}
-    <Footer onGoToPlazas={onGoToPlazas} />
+      <div className='register-content'>
+          <button onClick={onBackToHome}>Volver al Inicio</button>
+          {step === 1 && (
+              <Step1Form data={userData} updateFields={updateFields} onNext={nextStep}/>
+          )}
+          {step === 2 && (
+              <Step2PlazaSelection data={userData} updateFields={updateFields} onBack={prevStep}/>
+          )}
+      </div>
+      <Footer onGoToPlazas={onGoToPlazas} />
     </div>
-    
   );
 }
