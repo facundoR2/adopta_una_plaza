@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { registerUser } from './usuarioService.js';
+import { registerUser } from '../services/usuarioService.js';
 
 test('registerUser envía la solicitud de registro al endpoint correcto', async () => {
   const originalFetch = global.fetch;
@@ -25,7 +25,7 @@ test('registerUser envía la solicitud de registro al endpoint correcto', async 
       password: '123456',
     });
 
-    assert.equal(capturedUrl, '/api/usuarios/registro');
+    assert.equal(capturedUrl, '/api/auth/registro');
     assert.equal(capturedOptions.method, 'POST');
     assert.equal(capturedOptions.headers['Content-Type'], 'application/json');
     assert.equal(JSON.parse(capturedOptions.body).email, 'ana@example.com');
