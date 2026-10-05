@@ -1,0 +1,257 @@
+:root {
+  --dashboard-bg: #f5f7f9;
+  --dashboard-card: #ffffff;
+  --dashboard-border: #e5e7eb;
+  --dashboard-muted: #6b7280;
+}
+
+
+.coordinator-dashboard {
+  min-height: 100vh;
+  background: var(--dashboard-bg);
+}
+
+
+
+
+.dashboard-container {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+
+.dashboard-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+}
+.dashboard-hero,
+.dashboard-panel {
+  background: var(--dashboard-card);
+  border: 1px solid var(--dashboard-border);
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+.hero-copy .eyebrow,
+.panel-header .eyebrow,
+.section-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dashboard-muted);
+  margin-bottom: 10px;
+}
+
+.dashboard-hero h1,
+.panel-header h2 {
+  font-size: clamp(2rem, 2.4vw, 2.6rem);
+  margin: 0 0 14px;
+}
+
+.hero-text {
+  max-width: 560px;
+  line-height: 1.8;
+  color: #494d53;
+}
+
+.hero-actions,
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.activity-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+}
+
+.calendar-card,
+.today-card,
+.scheduled-card {
+  background: var(--dashboard-bg);
+  border-radius: 24px;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.calendar-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.calendar-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.calendar-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--dashboard-muted);
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.calendar-day {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  border: 1px solid transparent;
+  background: white;
+  color: #292d33;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.calendar-day.selected {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+  background: rgba(59, 160, 81, 0.08);
+}
+
+.task-columns {
+  display: grid;
+  gap: 20px;
+}
+
+.task-list,
+.schedule-list {
+  display: grid;
+  gap: 14px;
+}
+
+.task-item,
+.schedule-item {
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  background: white;
+}
+
+.task-item h3,
+.schedule-item h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.task-item p,
+.schedule-item p {
+  margin: 0;
+  color: var(--dashboard-muted);
+  line-height: 1.5;
+}
+
+.status-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #ffffff;
+}
+
+.status-completada {
+  background: #3ba051;
+}
+
+.status-en-progreso {
+  background: #f59e0b;
+}
+
+.status-planificada {
+  background: #64748b;
+}
+
+.btn-primary,
+.btn-secondary {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-weight: 700;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  opacity: 0.95;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--color-brand) 0%, var(--color-lime) 100%);
+  color: #ffffff;
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: var(--color-text-dark);
+  border: 1px solid #d1d5db;
+}
+
+@media (max-width: 980px) {
+  .dashboard-hero,
+  .activity-grid {
+    flex-direction: column;
+  }
+
+  .dashboard-hero {
+    align-items: flex-start;
+  }
+
+  .activity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-container {
+    padding: 20px 16px 32px;
+  }
+
+  .dashboard-hero,
+  .dashboard-panel {
+    padding: 22px;
+  }
+
+  .hero-copy h1,
+  .panel-header h2 {
+    font-size: 1.8rem;
+  }
+}
