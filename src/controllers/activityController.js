@@ -150,7 +150,7 @@ const actualizarTareas = async (req, res) => {
         const { tareas } = req.body;
 
         if (!Array.isArray(tareas)) {
-            return res.json({ mensaje: 'El cambo tareas debe ser un arreglo'});
+            return res.status(400).json({ mensaje: 'El cambo tareas debe ser un arreglo'});
         }
         //buscamos la actividad
         const actividad = await Actividad.findById(id);
