@@ -1,7 +1,7 @@
-const API_URL = '/api/actividades';
+import { getApiBaseUrl } from "./Apiconfig";
 
 export async function getMisActividades() {
-  const response = await fetch(`${API_URL}/mis-actividades`, {
+  const response = await fetch(`${getApiBaseUrl()}/mis-actividades`, {
     credentials: 'include'
   });
   if (!response.ok) throw new Error('No se pudieron cargar tus actividades');
@@ -10,7 +10,7 @@ export async function getMisActividades() {
 }
 
 export async function getActividades(mes) {
-  const url = mes ? `${API_URL}?mes=${encodeURIComponent(mes)}` : API_URL;
+  const url = mes ? `${getApiBaseUrl()}?mes=${encodeURIComponent(mes)}` : getApiBaseUrl();
   const response = await fetch(url);
   if (!response.ok) throw new Error('Error al cargar actividades');
   return response.json();
@@ -18,7 +18,7 @@ export async function getActividades(mes) {
 
 //funcion de coordinador para buscar actividades anexadas a la plaza/s.
 export async function getCoordActivitys() {
-  const response = await fetch(`${API_URL}/coordinador`, {
+  const response = await fetch(`${getApiBaseUrl()}/coordinador`, {
     method: 'GET',
     headers: {'Content-Type': 'application/json' },
     credentials: 'include'
@@ -30,7 +30,7 @@ export async function getCoordActivitys() {
 }
 
 export async function getMisPlazas() {
-  const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/usuarios/mis-plazas`,{
+  const response = await fetch(`${getApiBaseUrl()}/usuarios/mis-plazas`,{
     credentials: 'include'
   });
   if (!response.ok) throw new Error('Error al obtener tus plazas');
@@ -39,13 +39,13 @@ export async function getMisPlazas() {
 };
 
 export async function getActividad(id) {
-  const response = await fetch(`${API_URL}/${id}`);
+  const response = await fetch(`${getApiBaseUrl()}/${id}`);
   if (!response.ok) throw new Error('Actividad no encontrada');
   return response.json();
 }
 
 export async function createActividad(data) {
-  const response = await fetch(API_URL, {
+  const response = await fetch(`${getApiBaseUrl()}/actividades`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -58,7 +58,7 @@ export async function createActividad(data) {
 }
 
 export async function updateActividad(id, data) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${getApiBaseUrl()}/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -71,7 +71,7 @@ export async function updateActividad(id, data) {
 }
 
 export async function deleteActividad(id) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${getApiBaseUrl()}/${id}`, {
     method: 'DELETE',
   });
   if (!response.ok) {
@@ -82,7 +82,7 @@ export async function deleteActividad(id) {
 }
 
 export async function updateTarea(actividadId, tareaId, completada) {
-  const response = await fetch(`${API_URL}/${actividadId}/tareas/${tareaId}`, {
+  const response = await fetch(`${getApiBaseUrl()}/${actividadId}/tareas/${tareaId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ completada }),

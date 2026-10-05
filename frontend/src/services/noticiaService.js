@@ -1,7 +1,7 @@
-const API_URL = import.meta.env.BASE_URL;
+import { getApiBaseUrl } from "./Apiconfig";
 
 export async function getNoticiasAdmin() {
-  const response = await fetch(`${API_URL}/noticias/admin`,{
+  const response = await fetch(`${getApiBaseUrl()}/noticias/admin`,{
     credentials: 'include'
   });
   if (!response.ok) throw new Error('Error al cargar noticias');
@@ -9,7 +9,7 @@ export async function getNoticiasAdmin() {
 }
 
 export async function crearNoticia(data) {
-  const response = await fetch(`${API_URL}/noticias/new`, {
+  const response = await fetch(`${getApiBaseUrl()}/noticias/new`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: "include",
@@ -23,7 +23,7 @@ export async function crearNoticia(data) {
 }
 
 export async function actualizarNoticia(id, data) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${getApiBaseUrl()}/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -37,7 +37,7 @@ export async function actualizarNoticia(id, data) {
 }
 
 export async function eliminarNoticia(id) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${getApiBaseUrl()}/${id}`, {
     method: 'DELETE',
     credentials: 'include'
   });

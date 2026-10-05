@@ -1,6 +1,6 @@
+import { getApiBaseUrl } from "./Apiconfig";
 export async function fetchPlazas() {
-    const response = await fetch('/api/plazas/');
-
+    const response = await fetch(`${getApiBaseUrl()}/plazas/`);
     if (!response.ok){
         throw new Error('No se pudo cargar la lista de plazas');
     }
@@ -11,7 +11,7 @@ export async function fetchPlazas() {
 }
 
 export async function fetchPlazaById(id) {
-    const response = await fetch(`/api/plazas/${id}`);
+    const response = await fetch(`${getApiBaseUrl()}/plazas/${id}`);
     if (!response.ok) {
         throw new Error('No se pudo cargar la plaza');
     }

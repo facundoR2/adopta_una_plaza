@@ -1,7 +1,7 @@
-const API_URL = '/api/auth';
+import { getApiBaseUrl } from "./Apiconfig";
  //pasar estas funciones a authService.
 export async function checkEmailExists(email) {
-  const response = await fetch(`${API_URL}/verificar-email`, {
+  const response = await fetch(`${getApiBaseUrl()}/verificar-email`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json'},
     body: JSON.stringify({ email }),
@@ -20,7 +20,7 @@ export async function checkEmailExists(email) {
 export async function registerUser({ nombre, apellido, email, password, esGrupo, plazaId }) {
   try {
     
-    const response = await fetch(`${API_URL}/registro`, {
+    const response = await fetch(`${getApiBaseUrl()}/registro`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export async function registerUser({ nombre, apellido, email, password, esGrupo,
 
 export async function loginUser({ email, password }) {
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${getApiBaseUrl()}/login`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       credentials: 'include',
@@ -70,7 +70,7 @@ export async function loginUser({ email, password }) {
   }
 }
 export const logoutUser = async () => {
-  const response = await fetch(`${API_URL}/logout`,{
+  const response = await fetch(`${getApiBaseUrl()}/logout`,{
     method: 'POST',
     credentials: 'include'
   });
